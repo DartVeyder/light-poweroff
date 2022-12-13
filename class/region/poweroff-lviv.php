@@ -2,24 +2,33 @@
 
     class PoweroffLviv extends LightPoweroff{
         private $url = "https://poweroff.loe.lviv.ua/";
+
         private $utc;
         private $city;
         private $street;
 
-        public function __construct()
+        private $search = [];
+
+        public function __construct($search)
         {
-            $this->getUtc();
+            $this->search = $search;
+        }
+        
+        private function getSearch(){
+            $url = "";
+            $get_array = [];
+
+            foreach ($this->search  as $key => $value) {
+                $get_array[] = "$key=". urlencode($value);
+            }
+            $url = implode( "&", $get_array);
+            return $url;
         }
 
-        private function getUtc(){
-            //$utc = "Трускавецька";
-            $utc ="";
-            $this->utc = urlencode($utc);
-        }
+        
+        public function getUrlParse(){
 
-        private function getUrlParse(){
-
-            $url =$this->url . "search_off?city=&street=&otg=$this->utc&q=%D0%9F%D0%BE%D1%88%D1%83%D0%BA";
+            $url =$this->url . "search_off?{$this->getSearch()}&q=%D0%9F%D0%BE%D1%88%D1%83%D0%BA";
             return $url;
         }
 
@@ -43,13 +52,13 @@
 
         private function setArrayList($html){
             $array = []; 
-            $array['region'] = mb_convert_case($html->find('th',0)->plaintext, MB_CASE_TITLE, "UTF-8");
-            $array['utc'] = mb_convert_case($html->find('td',0)->plaintext, MB_CASE_TITLE, "UTF-8");
-            $array['city'] = mb_convert_case($html->find('td',1)->plaintext, MB_CASE_TITLE, "UTF-8");
-            $array['street'] = mb_convert_case($html->find('td',2)->plaintext, MB_CASE_TITLE, "UTF-8");;
-            $array['house'] = $html->find('td',3)->plaintext;
+            $array['region']        = mb_convert_case($html->find('th',0)->plaintext, MB_CASE_TITLE, "UTF-8");
+            $array['otg']           = mb_convert_case($html->find('td',0)->plaintext, MB_CASE_TITLE, "UTF-8");
+            $array['city']          = mb_convert_case($html->find('td',1)->plaintext, MB_CASE_TITLE, "UTF-8");
+            $array['street']        = mb_convert_case($html->find('td',2)->plaintext, MB_CASE_TITLE, "UTF-8");;
+            $array['house']         = $html->find('td',3)->plaintext;
             $array['shutdown_time'] = $html->find('td',6)->plaintext;
-            $array['power_time'] = $html->find('td',7)->plaintext;
+            $array['power_time']    = $html->find('td',7)->plaintext;
 
             return $array;
         }

@@ -3,7 +3,14 @@
     require_once('class/light-poweroff.php');
     require_once('class/region/poweroff-lviv.php');
     
-    $poweroffLviv = new PoweroffLviv;
+    $search = [
+        "otg" => "",
+        "city" => "",
+        "street" => ""
+    ];
+
+
+    $poweroffLviv = new PoweroffLviv($search);
     echo('<pre>');
     print_r( $poweroffLviv->getParseHtml());
 

@@ -41,42 +41,23 @@ class LightPoweroff{
 
     private function setArrayCity($data){
         $array = [];
-
         $array = array_values(array_unique(array_column($data, "city")));
 
         return $array;
     }
 
-    private function setArrayUtc($data){
+    private function setArrayOtg($data){
         $array = [];
-        $array = array_values(array_unique(array_column($data, "utc")));
+        $array = array_values(array_unique(array_column($data, "otg")));
         return $array;
     }
     
     protected function setArray($data){
         $array = [];
         $array['region'] = $this->setArrayRegion($data);
-        $array['city'] = $this->setArrayCity($data);
-        $array['utc'] = $this->setArrayUtc($data);
+        $array['city']   = $this->setArrayCity($data);
+        $array['otg']    = $this->setArrayOtg($data);
         $array['list'] = $data;
         return $array;
-
-        $array_templ = [
-            "regiones",
-            "utc",
-            "cities",
-            "list"  =>[
-                "region" => "",
-                "utc" => "",
-                "city" => "",
-                "street" => "",
-                "house" => "",
-                "shutdown_time" => "",
-                "power_time" => ""
-            ]
-
-        ];
-
-
     }
 }
