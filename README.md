@@ -20,7 +20,6 @@
         street_id
         city_id
         utc_id
-        region_id
-        name
+        region_id 
         house_number
         date_added
