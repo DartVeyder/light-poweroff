@@ -12,8 +12,8 @@
         }
 
         private function getUtc(){
-            $utc = "Трускавецька";
-            //$utc ="";
+            //$utc = "Трускавецька";
+            $utc ="";
             $this->utc = urlencode($utc);
         }
 
@@ -43,16 +43,17 @@
 
         private function setArrayList($html){
             $array = []; 
-            $array['region'] = $html->find('th',0)->plaintext;
-            $array['utc'] = $html->find('td',0)->plaintext;
-            $array['city'] = mb_strtoupper($html->find('td',1)->plaintext);
-            $array['street'] = $html->find('td',2)->plaintext;
+            $array['region'] = mb_convert_case($html->find('th',0)->plaintext, MB_CASE_TITLE, "UTF-8");
+            $array['utc'] = mb_convert_case($html->find('td',0)->plaintext, MB_CASE_TITLE, "UTF-8");
+            $array['city'] = mb_convert_case($html->find('td',1)->plaintext, MB_CASE_TITLE, "UTF-8");
+            $array['street'] = mb_convert_case($html->find('td',2)->plaintext, MB_CASE_TITLE, "UTF-8");;
             $array['house'] = $html->find('td',3)->plaintext;
             $array['shutdown_time'] = $html->find('td',6)->plaintext;
             $array['power_time'] = $html->find('td',7)->plaintext;
 
             return $array;
         }
+
         
     }
 
