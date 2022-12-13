@@ -27,8 +27,7 @@
 
         
         public function getUrlParse(){
-
-            $url =$this->url . "search_off?{$this->getSearch()}&q=%D0%9F%D0%BE%D1%88%D1%83%D0%BA";
+            $url = $this->url . "search_off?{$this->getSearch()}&q=%D0%9F%D0%BE%D1%88%D1%83%D0%BA";
             return $url;
         }
 
@@ -43,8 +42,8 @@
             foreach($table as $tbody){
                 $tr = $tbody->find('tr',0);
                 $array[] = $this->setArrayList($tr); 
-
             }
+
             $array = $this->setArray($array);
 
             return $array;
