@@ -4,15 +4,15 @@
     require_once('class/region/poweroff-lviv.php');
     
     $search = [
-        "otg" => "",
+        "otg" => "Трускавецька",
         "city" => "",
         "street" => ""
     ];
 
 
     $poweroffLviv = new PoweroffLviv($search);
-    echo('<pre>');
-    print_r( $poweroffLviv->getParseHtml());
+    header('Content-Type: application/json');
+    print_r( json_encode($poweroffLviv->getParseHtml(),JSON_UNESCAPED_UNICODE));
 
 
 

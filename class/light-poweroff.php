@@ -51,7 +51,7 @@ class LightPoweroff{
         $array = array_values(array_unique(array_column($data, "otg")));
         return $array;
     }
-    
+ 
     protected function setArray($data){
         $array = [];
         $array['region'] = $this->setArrayRegion($data);
@@ -60,4 +60,10 @@ class LightPoweroff{
         $array['list'] = $data;
         return $array;
     }
+
+    protected function viewJson(){
+
+    }
+
+
 }
