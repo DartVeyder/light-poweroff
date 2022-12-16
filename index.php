@@ -1,4 +1,5 @@
 <?php
+    require_once('vendor/autoload.php');
     require_once('libs/simple_html_dom.php');
     require_once('class/light-poweroff.php');
     require_once('class/region/poweroff-lviv.php');
@@ -6,13 +7,13 @@
     $search = [
         "otg" => "Трускавецька",
         "city" => "",
-        "street" => ""
+        "street" => "", 
     ];
 
 
     $poweroffLviv = new PoweroffLviv($search);
     header('Content-Type: application/json');
-    print_r( json_encode($poweroffLviv->getParseHtml(),JSON_UNESCAPED_UNICODE));
+    print_r( $poweroffLviv->getParseHtml());
 
 
 

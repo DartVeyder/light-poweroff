@@ -3,11 +3,8 @@
     class PoweroffLviv extends LightPoweroff{
         private $url = "https://poweroff.loe.lviv.ua/";
 
-        private $utc;
-        private $city;
-        private $street;
-
         private $search = [];
+        private $offline_url = "././urls/page1.html";
 
         public function __construct($search)
         {
@@ -25,19 +22,24 @@
             return $url;
         }
 
-        
         public function getUrlParse(){
             $url = $this->url . "search_off?{$this->getSearch()}&q=%D0%9F%D0%BE%D1%88%D1%83%D0%BA";
+            
             return $url;
-        }
+        } 
 
         private function getHtml(){
             return $this->getParseUrlHtml($this->getUrlParse());
         }
 
         public function getParseHtml(){
-            $html = $this->getHtml(); 
             $array= [];
+            $html = $this->getHtml();
+            if( $html->find("h1.zone-name-title",0) ){
+                $array["message"] = "Нема доступу";
+                $array["status"] = "failed"; 
+                $array["response"] = trim($html->find("#challenge-body-text",0)->plaintext);
+            }else{ 
             $table = $html->find('table[style="background-color: white;"] tbody');
             foreach($table as $tbody){
                 $tr = $tbody->find('tr',0);
@@ -45,7 +47,7 @@
             }
 
             $array = $this->setArray($array);
-
+        }
             return $array;
         } 
 
