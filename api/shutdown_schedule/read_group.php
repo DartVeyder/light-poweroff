@@ -1,23 +1,23 @@
 <?php
-    // необходимые HTTP-заголовки
+    // необхідні HTTP-заголовки
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Headers: access");
     header("Access-Control-Allow-Methods: GET");
     header("Access-Control-Allow-Credentials: true");
     header("Content-Type: application/json");
 
-    // подключение базы данных и файл, содержащий объекты
+    // підключення бази даних та файл, що містить об'єкти
     include_once "../../class/dataBase/database.php";
     include_once "../objects/shutdown_schedule.php";
 
-    // получаем соединение с базой данных
+    // отримуємо з'єднання з базою даних
     $database = new Database();
     $db = $database->getConnection();
 
-    // инициализируем объект
+    // ініціалізуємо об'єкт
     $shutdown_schedule = new ShutdownShedule($db);
     
-    // установим свойство ID записи для чтения
+    // встановимо властивість ID запису для читання
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
 
     // получим графік відключення по групі
@@ -30,7 +30,7 @@
         $shutdown_schedule_arr = array();
         $shutdown_schedule_arr['records'] = array();
 
-        // получаем содержимое нашей таблицы
+        // отримуємо вміст нашої таблиці
         // fetch() быстрее, чем fetchAll()
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // извлекаем строку
@@ -48,17 +48,17 @@
             array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
         }
 
-        // устанавливаем код ответа - 200 OK
+        // встановлюємо код відповіді – 200 OK
         http_response_code(200);
 
-        // выводим данные о товаре в формате JSON
-    // echo json_encode($shutdown_schedule_arr);
-    print_r($shutdown_schedule_arr);
+        // виводимо дані про графік у форматі JSON
+        // echo json_encode($shutdown_schedule_arr);
+        print_r($shutdown_schedule_arr);
     }else {
-        // установим код ответа - 404 Не найдено
+        //встановимо код відповіді - 404 Не знайдено
         http_response_code(404);
 
-        // сообщаем пользователю, что товары не найдены
+        // повідомляємо користувачеві, що графіки відключень не знайдені
         echo json_encode(array("message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
     }
 
