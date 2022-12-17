@@ -22,11 +22,11 @@
 
     // встановимо властивість ID запису для читання
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
-    $to_weekday_id = date('w');
+    $to_weekday_id = date('N');
     $today = date('H:i');
 
     if($today > "21:00" && $today < "23:59"  ){
-        $to_weekday_id = date('w', strtotime('2 day', strtotime($to_weekday_id)))+1;
+        $to_weekday_id = date('w', strtotime('1 day', strtotime($to_weekday_id)));
         $today = "00:00";
     }
 
