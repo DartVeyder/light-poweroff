@@ -1,15 +1,36 @@
-CREATE TABLE `groups` 
+CREATE TABLE `users` 
+(
+    `user_id`	int(11) AUTO_INCREMENT,
+	`user_telegram_id`	int(11),
+	`group_id`	int(11),
+	`region_id`	int(11),
+    `name`	varchar(300),
+    PRIMARY KEY (`user_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+ 
+
+CREATE TABLE `cluster` 
 (
     `group_id`	int(11) AUTO_INCREMENT,
     `name`	varchar(300),
     PRIMARY KEY (`group_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
 
-INSERT INTO `groups` (`group_id`, `name`) VALUES
+INSERT INTO `cluster` (`group_id`, `name`) VALUES
 	('1', 'Група 1'),
 	('2', 'Група 2'),
 	('3', 'Група 3');
 
+CREATE TABLE `regions`
+(
+    `region_id`	int(11) AUTO_INCREMENT,
+    `name`	varchar(300),
+    PRIMARY KEY (`region_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=2;
+
+INSERT INTO `regions` (`region_id`, `name`) VALUES
+	('1', 'Львівська');
+	  
 CREATE TABLE IF NOT EXISTS  `time` 
 (
     `time_id`        int(11) AUTO_INCREMENT,
