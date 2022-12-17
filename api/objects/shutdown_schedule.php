@@ -21,7 +21,7 @@
             $query = "SELECT 
                 w.name as weekday_name, s.group_id, s.weekday_id, s.time_id, s.status_id, 
                 t.shutdown_time, t.power_time,
-                
+                 
             FROM 
                 ".$this->table_name." s
                 LEFT JOIN
