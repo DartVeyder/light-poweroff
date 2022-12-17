@@ -19,12 +19,12 @@ CREATE TABLE IF NOT EXISTS  `time`
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
 
 INSERT INTO `time` (`time_id`, `shutdown_time`, `power_time`) VALUES
-	('1', '1', '5'),
-	('2', '5', '9'),
-	('3', '9', '13'),
-	('4', '13', '17'),
-	('5', '17', '21'),
-	('6', '21', '1');
+	('1', '01:00', '05:00'),
+	('2', '05:00', '09:00'),
+	('3', '09:00', '13:00'),
+	('4', '13:00', '17:00'),
+	('5', '17:00', '21:00'),
+	('6', '21:00', '01:00');
 
 CREATE TABLE `weekdays` 
 (
