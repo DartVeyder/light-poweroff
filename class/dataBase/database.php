@@ -6,7 +6,7 @@ class Database
     private $host = "localhost";
     private $db_name = "light_poweroff";
     private $username = "root";
-    private $password = "root";
+    private $password = "";
     public $conn;
 
     // получаем соединение с БД
