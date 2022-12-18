@@ -36,7 +36,9 @@ if($num > 0){
             "shutdown_time" => $shutdown_time,
             "power_time" => $power_time,
             "status_id" => $status_id,
-            "status_name" => $status_name
+            "status_name" => $status_name,
+            "region_id"=> $region_id,
+            "region_name" => $region_name
         );
         array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
     }
