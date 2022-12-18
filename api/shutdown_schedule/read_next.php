@@ -28,8 +28,8 @@
     $today = date('H:i');
 
     if($today > "21:00" && $today < "23:59"  ){
-        $to_weekday_id = date('w', strtotime('1 day', strtotime($to_weekday_id)));
-        $today = "00:00";
+        $to_weekday_id =  date('N', strtotime('+1 day', strtotime(date('Y-m-d'))));
+         $today = "00:00";
     }
 
     $shutdown_schedule->to_weekday_id = $to_weekday_id;
