@@ -19,6 +19,7 @@
     
     // встановимо властивість ID запису для читання
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
+    $shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
 
     // получим графік відключення по групі
     $stmt = $shutdown_schedule->readGroup();
@@ -43,7 +44,9 @@
                 "shutdown_time" => $shutdown_time,
                 "power_time" => $power_time,
                 "status_id" => $status_id,
-                "status_name" => $status_name
+                "status_name" => $status_name,
+                "region_id"=> $region_id,
+                "region_name" => $region_name
             );
             array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
         }
