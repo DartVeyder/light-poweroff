@@ -93,6 +93,28 @@
                 } 
             }
 
+            public function read(){
+                $query = "SELECT u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.name,
+                r.name as region_name,
+                gr.name as group_name
+            FROM 
+                ".$this->table_name." u
+            LEFT JOIN
+                regions r
+                    ON u.region_id = r.region_id
+            LEFT JOIN
+                cluster gr
+                    on u.group_id = gr.group_id 
+            ";
+        
+                // подготовка запроса
+                $stmt = $this->conn->prepare($query);
+
+                // выполняем запрос
+                $stmt->execute();
+                return $stmt;
+            }
+
         }
     
 
