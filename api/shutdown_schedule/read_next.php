@@ -9,12 +9,14 @@
     header("Content-Type: application/json");
 
     // підключення бази даних та файл, що містить об'єкти
+    $config = include_once "../../class/config.php";
     include_once "../../class/dataBase/database.php";
     include_once "../objects/shutdown_schedule.php";
 
     // отримуємо з'єднання з базою даних
+    $config_db = $config['database'];
     $database = new Database();
-    $db = $database->getConnection();
+    $db = $database->getConnection($config_db);
 
     // ініціалізуємо об'єкт
     $shutdown_schedule = new ShutdownShedule($db);
