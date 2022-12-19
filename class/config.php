@@ -1,10 +1,10 @@
 <?php
     return [
         "database" =>[
-            'host' => 'localhost',
-            'db_name' => 'light_poweroff',
-            'username' => 'root',
-            'password' => 'root'
+            'host' => '',
+            'db_name' => '',
+            'username' => '',
+            'password' => ''
         ]
     ]
 ?>
