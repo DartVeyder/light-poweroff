@@ -1,6 +1,6 @@
 <?php
     class Regions{
-        // підключення до бази даних і таблиці "shutdown_schedule"
+        // підключення до бази даних і таблиці "regions"
         private $conn;
         private $table_name = "regions";
 

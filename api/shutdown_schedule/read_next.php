@@ -70,8 +70,8 @@
         http_response_code(200);
 
         // виводимо дані про графік у форматі JSON
-        // echo json_encode($shutdown_schedule_arr);
-        print_r($shutdown_schedule_arr);
+        echo json_encode($shutdown_schedule_arr);
+        
     }else {
         //встановимо код відповіді - 404 Не знайдено
         http_response_code(404);

@@ -1,10 +1,15 @@
 CREATE TABLE `users` 
 (
     `user_id`	        int(11)  NOT NULL AUTO_INCREMENT,
-	`user_telegram_id`	int(11)  NOT NULL,
+	`user_telegram_id`	int(11),
 	`group_id`			int(11)  NOT NULL,
 	`region_id`			int(11)  NOT NULL,
-    `name`				varchar(300),
+    `first_name`	    varchar(300),
+	`last_name`	    	varchar(300),
+	`username`	   		varchar(300),
+	`language_code`	    varchar(300),
+	`date_added`		datetime NOT NULL,
+	`date_modified`		timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
     PRIMARY KEY (`user_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
  

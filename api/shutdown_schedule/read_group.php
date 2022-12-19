@@ -11,10 +11,9 @@
     include_once "../../class/dataBase/database.php";
     include_once "../objects/shutdown_schedule.php";
 
-    // отримуємо з'єднання з базою даних
-    $config_db = $config['database'];
+    // отримуємо з'єднання з базою даних 
     $database = new Database();
-    $db = $database->getConnection($config_db);
+    $db = $database->getConnection($config['database']);
 
     // ініціалізуємо об'єкт
     $shutdown_schedule = new ShutdownShedule($db);
@@ -57,8 +56,7 @@
         http_response_code(200);
 
         // виводимо дані про графік у форматі JSON
-        // echo json_encode($shutdown_schedule_arr);
-        print_r($shutdown_schedule_arr);
+        echo json_encode($shutdown_schedule_arr);       
     }else {
         //встановимо код відповіді - 404 Не знайдено
         http_response_code(404);
