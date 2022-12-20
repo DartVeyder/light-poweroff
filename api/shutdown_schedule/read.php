@@ -49,8 +49,8 @@ if($num > 0){
     http_response_code(200);
 
     // выводим данные о товаре в формате JSON
-   // echo json_encode($shutdown_schedule_arr);
-   print_r($shutdown_schedule_arr);
+   echo json_encode($shutdown_schedule_arr);
+   //print_r($shutdown_schedule_arr);
 }else {
     // установим код ответа - 404 Не найдено
     http_response_code(404);

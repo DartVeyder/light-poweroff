@@ -1,3 +1,6 @@
+DROP DATABASE `light_poweroff`;
+CREATE DATABASE `light_poweroff`;
+
 CREATE TABLE `users` 
 (
     `user_id`	        int(11) 		NOT NULL AUTO_INCREMENT,

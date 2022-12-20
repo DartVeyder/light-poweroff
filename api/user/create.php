@@ -17,15 +17,12 @@
     $user = new User($db);
 
     if(
-        !empty($_GET['user_telegram_id']) &&
-        !empty($_GET['group_id']) &&
-        !empty($_GET['region_id'])
+        !empty($_GET['user_telegram_id'])
     ){
-        $user->region_id = $_GET["region_id"];
-        $user->group_id = $_GET['group_id'];
-        $user->user_telegram_id =  mt_rand();
+      
+        $user->user_telegram_id = $_GET['user_telegram_id'];
         $user->date_added = date("Y-m-d H:i:s");
-
+        
         $result = $user->create(); 
         if ($result['status'] == 'success') {
             // установим код ответа - 201 создано
