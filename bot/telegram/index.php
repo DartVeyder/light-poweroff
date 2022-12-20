@@ -47,6 +47,23 @@
                 ]
             );
         break; 
+        case 'Кнопка 2':
+            $reply = "Привіт: $first_name $last_name кнопка 2 " ;
+            $reply_markup = $telegram->replyKeyboardMarkup(
+                [
+                    'keyboard'          => $menu, 
+                    'resize_keyboard'   => true, 
+                    'one_time_keyboard' => false
+                ]
+            );
+            $telegram->sendMessage(
+                [
+                    'chat_id'      => $chta_id, 
+                    'text'         => $reply, 
+                    'reply_markup' => $reply_markup
+                ]
+            );
+        break; 
     }
    
 ?>
