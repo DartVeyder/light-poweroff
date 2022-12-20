@@ -7,7 +7,7 @@
     header("Content-Type: application/json");
 
     // підключення бази даних та файл, що містить об'єкти
-    $config = include_once "../../class/config.php";
+    include_once "../../class/core.php";
     include_once "../../class/dataBase/database.php";
     include_once "../objects/shutdown_schedule.php";
 

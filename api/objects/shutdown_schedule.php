@@ -61,11 +61,11 @@
                     s.region_id  = ? AND
                     s.weekday_id = ? AND
                     t.shutdown_time > ? AND
-                    s.status_id IN (1,3)
+                    s.status_id IN (1,2,3)
                 ORDER BY
                     s.group_id ASC , s.weekday_id ASC
                 LIMIT 
-                    0,2";
+                    0,3";
             ;
                     
             // подготовка запроса

@@ -5,18 +5,18 @@
     header("Content-Type: application/json; charset=UTF-8");
 
     // подключение базы данных и файл, содержащий объекты
-    $config = include_once "../../class/config.php";
+    include_once "../../class/core.php";
     include_once "../../class/dataBase/database.php";
     include_once "../objects/user.php";
 
-    // получаем соединение с базой данных
-    $config_db = $config['database'];
+    
+    // получаем соединение с базой данных 
     $database = new Database();
-    $db = $database->getConnection( $config_db );
+    $db = $database->getConnection( $config['database']);
 
     // инициализируем объект
     $user = new User($db);
-
+     
     $stmt = $user->read();
     $num = $stmt->rowCount();
 
@@ -28,11 +28,18 @@
             // извлекаем строку
             extract($row);
             $user_item = array(
+                "user_id" => $user_id,
                 "region_id" => $region_id,
                 "region_name" => $region_name,
                 "group_id" => $group_id,
                 "group_name" => $group_name,
-                "user_telegram_id" => $user_telegram_id
+                "user_telegram_id" => $user_telegram_id,
+                "username" => $username,
+                "first_name" => $first_name,
+                "last_name" => $last_name,
+                "language_code" => $language_code,
+                "date_added" => $date_added,
+                "date_modified" => $date_modified
             );
             array_push($user_arr["records"], $user_item);
         }

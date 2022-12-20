@@ -8,7 +8,7 @@
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
     // підключення бази даних та файл, що містить об'єкти
-    $config = include_once "../../class/config.php";
+    include_once "../../class/core.php";
     include_once "../../class/dataBase/database.php";
     include_once "../objects/user.php";
 
@@ -23,9 +23,11 @@
     ){
         $user->region_id = $_GET["region_id"];
         $user->group_id = $_GET['group_id'];
-        $user->user_telegram_id = $_GET['user_telegram_id'];
-        $result = $user->create();
-        if ($result['success']) {
+        $user->user_telegram_id =  mt_rand();
+        $user->date_added = date("Y-m-d H:i:s");
+
+        $result = $user->create(); 
+        if ($result['status'] == 'success') {
             // установим код ответа - 201 создано
             http_response_code(201);
     

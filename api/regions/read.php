@@ -5,10 +5,10 @@
     header("Content-Type: application/json; charset=UTF-8");
 
     // подключение базы данных и файл, содержащий объекты
-    $config = include_once "../../class/config.php";
+    include_once "../../class/core.php";
     include_once "../../class/dataBase/database.php";
     include_once "../objects/regions.php";
-
+ 
     // получаем соединение с базой данных
     $config_db = $config['database'];
     $database = new Database();
