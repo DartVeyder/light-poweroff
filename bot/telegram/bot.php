@@ -1,13 +1,77 @@
 <?php
     class Bot{
+        private $chat_id;
+        private $username;
+        private $user_telegram_id;
+        private $first_name;
+        private $last_name;
+        private $language_code; 
+
+        public $telegram;
+        public $home_url_api;
 
         public function __construct()
         {
-            
+            $result = $this->telegram->getWebhookUpdates();
+
+            $this->chat_id          = $result["message"]["chat"]["id"];
+            $this->username         = $result["message"]["from"]["username"];
+            $this->user_telegram_id = $result["message"]["from"]["id"];
+            $this->first_name       = $result["message"]["from"]["first_name"];
+            $this->last_name        = $result["message"]["from"]["last_name"];
+            $this->language_code    = $result["message"]["from"]["language_code"];
         }
 
         public function getTextStart(){
+            $reply = 'Привіт, цей бот буде вас попереджути про відключення світла. Для початку виберіть свою область?';
+            $response = $this->get($this->home_url_api . "/regions/read.php");   
+            $regions_arr = json_decode($response, true);  
+            foreach ($regions_arr['records'] as $key => $region) {
+                $menu_regions[] = [
+                    [
+                        'text'          => $region['region_name'],
+                        'callback_data' => 'region_' . $region['region_id']
+                    ]
+                ];
+            } 
 
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu_regions,
+                    'resize_keyboard' => true
+                ]
+            );
+
+            $this->telegram->sendMessage(
+                [
+                    'chat_id'       => $this->chat_id, 
+                    'text'          => $reply, 
+                    'reply_markup'  => $reply_markup
+                ]
+            ); 
+        
+            $data = [
+                "username" => $this->username,
+                "user_telegram_id" => $this->user_telegram_id,
+                "first_name" => $this->first_name,
+                "last_name" => $this->last_name,
+                "language_code" => $this->language_code
+
+            ];
+            //$response = get($home_url_api . "/user/create.php?", $data);
+        } 
+        
+        public function setRegion(){
+            if(isset($this->result['callback_query'])){
+                $chat_id = $this->result['callback_query']['from']['id'];
+                $reply = "Ви вибрали Львівську область"; 
+                $this->telegram->sendMessage(
+                    [
+                        'chat_id'      => $chat_id, 
+                        'text'         => $reply
+                    ]
+                ); 
+            } 
         }
 
         private function get($url = '',$data = [] , $cookie = ''){
