@@ -19,11 +19,19 @@
     if(
         !empty($_GET['user_telegram_id'])
     ){
-      
         $user->user_telegram_id = $_GET['user_telegram_id'];
-        $user->date_added = date("Y-m-d H:i:s");
+        $data = $_GET;       
         
-        $result = $user->create(); 
+        $result_readOne = $user->readOne(); 
+
+        if( $result_readOne['status'] == "failed"){
+            $data["date_added"] = date("Y-m-d H:i:s");
+            $result = $user->create($data); 
+        }else{ 
+            $data['date_modified'] = date("Y-m-d H:i:s");
+            $result = $user->update($data, $_GET["user_telegram_id"]); 
+        }
+        
         if ($result['status'] == 'success') {
             // установим код ответа - 201 создано
             http_response_code(201);

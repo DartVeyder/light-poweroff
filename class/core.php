@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 date_default_timezone_set($config["timezone"]);
 
 // URL домашней страницы
-$home_url_api = "https://bear-dev.zzz.com.ua/light-poweroff/api"; 
+$home_url_api = $config["home_url_api"];
 
 
 ?>

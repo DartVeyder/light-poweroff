@@ -15,18 +15,28 @@ include_once "../objects/user.php";
 // получаем соединение с базой данных
 $database = new Database();
 $db = $database->getConnection($config['database']);
-
+$error = [];
 // подготовка объекта
 $user = new User($db);
 
 // установим свойство ID записи для чтения
-$user->user_telegram_id = isset($_GET["user_telegram_id"]) ? $_GET["user_telegram_id"] : die();
+$user->user_telegram_id = @$_GET["user_telegram_id"];
 
 // получим детали товара
-$user->readOne();
+$result = $user->readOne();
+ 
+if($user->user_telegram_id == null){
+    $error = array("message" => "Нема user_telegram_id");
+}
+else{ 
+    if($result["status"] == "failed"  ){
+        $error = array("message" => "Користувача нема");
+    }
+}
+ 
 
-if ($user->user_telegram_id != null) {
-
+if (!$error) {
+ 
     // создание массива
     $user_arr = array(
         "user_id" => $user->user_id,
@@ -53,5 +63,5 @@ if ($user->user_telegram_id != null) {
     http_response_code(404);
 
     // сообщим пользователю, что такой товар не существует
-    echo json_encode(array("message" => "Користувача нема"), JSON_UNESCAPED_UNICODE);
+    echo json_encode($error, JSON_UNESCAPED_UNICODE);
 }
