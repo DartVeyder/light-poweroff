@@ -8,8 +8,8 @@
     use Telegram\Bot\Api;
 
     $telegram = new Api($config["bot"]["telegram"]["token"]);
-    
-    $bot = new Bot(); 
+    $result = $telegram->getWebhookUpdates();
+    $bot = new Bot( $result); 
     
     $bot->telegram = $telegram;
     $bot->home_url_api = $home_url_api;
@@ -18,10 +18,10 @@
     
     switch ($text) {
         case '/start':
-            $bot->getTextStart();
-        break;  
+            $bot->getTextStart(); 
+        break; 
     }
 
-    $bot->setRegion();
+    $bot->setRegion( $result);
 
 ?>

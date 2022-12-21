@@ -10,10 +10,8 @@
         public $telegram;
         public $home_url_api;
 
-        public function __construct()
+        public function __construct( $result)
         {
-            $result = $this->telegram->getWebhookUpdates();
-
             $this->chat_id          = $result["message"]["chat"]["id"];
             $this->username         = $result["message"]["from"]["username"];
             $this->user_telegram_id = $result["message"]["from"]["id"];
@@ -23,7 +21,59 @@
         }
 
         public function getTextStart(){
-            $reply = 'Привіт, цей бот буде вас попереджути про відключення світла. Для початку виберіть свою область?';
+            $reply = 'Привіт, цей бот буде вас попереджути про відключення світла. Для початку виберіть свою область.';
+            $this->getKeyBoardRegion($reply); 
+        
+            $data = [
+                "username" => $this->username,
+                "user_telegram_id" => $this->user_telegram_id,
+                "first_name" => $this->first_name,
+                "last_name" => $this->last_name,
+                "language_code" => $this->language_code
+
+            ];
+            //$response = get($home_url_api . "/user/create.php?", $data);
+        } 
+ 
+        public function setRegion( $result){
+            if(isset($result['callback_query'])){
+                $this->chat_id = $result['callback_query']['from']['id'];
+                $data_callback = $result['callback_query']['data'];
+
+                $callback = explode("_", $data_callback);
+                switch ($callback[0]) {
+                    case 'region':
+                        $reply = "Тепер виберіть вашу групу.";
+                         $this->getKeyboardGroup($reply);
+                    break; 
+                } 
+              
+            } 
+        }
+
+        private function getKeyboardGroup($reply){
+            $menu = [[
+                ['text'=>'Група 1','callback_data'=>'group_1'],
+                ['text'=>'Група 2','callback_data'=>'group_2'],
+                ['text'=>'Група 3','callback_data'=>'group_3']
+            ]];
+            
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            $this->telegram->sendMessage(
+                [
+                    'chat_id'       => $this->chat_id, 
+                    'text'          => $reply,
+                    'reply_markup'  => $reply_markup
+                ]
+            );  
+        }   
+
+        private function getKeyBoardRegion($reply){
             $response = $this->get($this->home_url_api . "/regions/read.php");   
             $regions_arr = json_decode($response, true);  
             foreach ($regions_arr['records'] as $key => $region) {
@@ -41,7 +91,6 @@
                     'resize_keyboard' => true
                 ]
             );
-
             $this->telegram->sendMessage(
                 [
                     'chat_id'       => $this->chat_id, 
@@ -49,29 +98,6 @@
                     'reply_markup'  => $reply_markup
                 ]
             ); 
-        
-            $data = [
-                "username" => $this->username,
-                "user_telegram_id" => $this->user_telegram_id,
-                "first_name" => $this->first_name,
-                "last_name" => $this->last_name,
-                "language_code" => $this->language_code
-
-            ];
-            //$response = get($home_url_api . "/user/create.php?", $data);
-        } 
-        
-        public function setRegion(){
-            if(isset($this->result['callback_query'])){
-                $chat_id = $this->result['callback_query']['from']['id'];
-                $reply = "Ви вибрали Львівську область"; 
-                $this->telegram->sendMessage(
-                    [
-                        'chat_id'      => $chat_id, 
-                        'text'         => $reply
-                    ]
-                ); 
-            } 
         }
 
         private function get($url = '',$data = [] , $cookie = ''){
