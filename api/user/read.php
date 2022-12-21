@@ -55,6 +55,6 @@
         http_response_code(404);
     
         // сообщаем пользователю, что товары не найдены
-        echo json_encode(array("message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
+        echo json_encode(array("message" => "Користувачів не знайдено."), JSON_UNESCAPED_UNICODE);
     }
 ?>
