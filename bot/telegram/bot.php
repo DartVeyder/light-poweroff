@@ -29,8 +29,8 @@
                 "user_telegram_id" => $this->user_telegram_id,
                 "first_name" => $this->first_name,
                 "last_name" => $this->last_name,
-                "language_code" => $this->language_code
-
+                "language_code" => $this->language_code,
+                "telegram_chat_id" => $this->chat_id
             ];
             $this->get($this->home_url_api . "/user/create.php?", $data);
         } 
@@ -42,6 +42,7 @@
                 $data_callback = $result['callback_query']['data'];
                 $data = [ 
                     "user_telegram_id" =>  $this->user_telegram_id,
+                    "telegram_chat_id" => $this->chat_id
                 ];
                 $callback = explode("_", $data_callback);
                 switch ($callback[0]) {
@@ -87,13 +88,21 @@
         private function getGenerateView($data){
             $text = "";
             $text .= "({$data[0]["weekday_name"]}) \n{$data[0]["group_name"]} \n\n";
-            $time = date("H:i:s"); 
+            $hour = date("H:i");
+            $time = date("Y-m-d H:i");
+            $date = date("Y-m-d");
             foreach ($data as $item) {
-                 
-                if($time > $item['shutdown_time'] && $item['power_time'] > $time){
-                    $text .= "<b>   $item[shutdown_time] - $item[power_time] $item[status_name]</b>\n";
+                $shutdown_time = $date . " " . $item["shutdown_time"];
+                if( $item['shutdown_time'] > $item['power_time']){
+                    $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
+                }  
+                $power_time    = $date . " " .$item["power_time"];
+                $t = "$item[shutdown_time] -  $item[power_time] $item[status_name] ";
+
+                if($time > $shutdown_time &&  $power_time > $time){
+                    $text .= "➤<b>$t</b>\n";
                 }else{
-                    $text .= "➤$item[shutdown_time] - $item[power_time] $item[status_name]\n";
+                    $text .= "$t\n";
                 }
             }
             return $text;
