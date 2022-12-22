@@ -34,7 +34,7 @@
         //метод для получення графіку відключення по групах
         public function readGroup(){ 
             $wher_wd ="";
-            if($this->weekday_id){
+            if($this->to_weekday_id){
                 $wher_wd = "AND s.weekday_id  = :weekday_id";
             }
             $query = $this->getQuery();

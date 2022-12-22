@@ -87,24 +87,13 @@
         private function getGenerateView($data){
             $text = "";
             $text .= "({$data[0]["weekday_name"]}) \n{$data[0]["group_name"]} \n\n";
-            $time = date("H:i:s");
-            $time_format = [ 
-                "01:00" => "0️⃣1️⃣:0️⃣0️⃣",
-                "05:00" => "0️⃣5️⃣:0️⃣0️⃣",
-                "09:00" => "0️⃣9️⃣:0️⃣0️⃣",
-                "13:00" => "1️⃣3️⃣:0️⃣0️⃣",
-                "17:00" => "1️⃣7️⃣:0️⃣0️⃣",
-                "21:00" => "2️⃣1️⃣:0️⃣0️⃣",
-                "23:00" => "2️⃣3️⃣:0️⃣0️⃣",
-            ];
+            $time = date("H:i:s"); 
             foreach ($data as $item) {
-                $shutdown_time = $time_format[$item['shutdown_time']];
-                $power_time = $time_format[$item['power_time']];
-
+                 
                 if($time > $item['shutdown_time'] && $item['power_time'] > $time){
-                    $text .= "$shutdown_time - $power_time <b>$item[status_name]</b>\n";
+                    $text .= "<b>   $item[shutdown_time] - $item[power_time] $item[status_name]</b>\n";
                 }else{
-                    $text .= "$shutdown_time - $power_time $item[status_name]\n";
+                    $text .= "➤$item[shutdown_time] - $item[power_time] $item[status_name]\n";
                 }
             }
             return $text;
@@ -156,7 +145,7 @@
                     'text'          => $reply, 
                     'reply_markup'  => $reply_markup
                 ]
-            ); 
+            );  
         }
 
         private function get($url = '',$data = [] , $cookie = ''){
