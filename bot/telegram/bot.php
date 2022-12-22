@@ -46,29 +46,68 @@
                 $callback = explode("_", $data_callback);
                 switch ($callback[0]) {
                     case 'region':
-                        $data["region_id" ] = $callback[1]; 
-                        
+                        $data["region_id" ] = $callback[1];  
                         $reply = "Тепер виберіть вашу групу.";
+                        $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->getKeyboardGroup($reply);
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1]; 
+                        $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->getShutdownSchedule();
                     break;
                 } 
 
-                $this->get($this->home_url_api . "/user/update.php?", $data);
+               
             } 
         }
 
         private function getShutdownSchedule(){
-            $text = "Графік відключення";
+            $text = "";
+            $weekday_id = date("N");
+            $today = date("d.m.Y");
+
+            $text .= "Графік відключення на сьогодні:\n$today";
+            $response = $this->get($this->home_url_api . "/user/readOne.php?", ["user_telegram_id" =>  $this->user_telegram_id]);
+            $result = json_decode($response,true);  
+
+            $response  = $this->get($this->home_url_api . "/shutdown_schedule/read_group.php?", ["group_id" => $result['group_id'], "region_id" => $result['region_id'], "weekday_id" => $weekday_id ]);
+            $result = json_decode($response,true); 
+            $text .= $this->getGenerateView($result['records']);
+
             $this->telegram->sendMessage(
                 [
                     'chat_id'       => $this->chat_id, 
-                    'text'          => $text 
+                    'text'          => $text ,
+                    'parse_mode'    => 'html'
                 ]
             );  
+        }
+
+        private function getGenerateView($data){
+            $text = "";
+            $text .= "({$data[0]["weekday_name"]}) \n{$data[0]["group_name"]} \n\n";
+            $time = date("H:i:s");
+            $time_format = [ 
+                "01:00" => "0️⃣1️⃣:0️⃣0️⃣",
+                "05:00" => "0️⃣5️⃣:0️⃣0️⃣",
+                "09:00" => "0️⃣9️⃣:0️⃣0️⃣",
+                "13:00" => "1️⃣3️⃣:0️⃣0️⃣",
+                "17:00" => "1️⃣7️⃣:0️⃣0️⃣",
+                "21:00" => "2️⃣1️⃣:0️⃣0️⃣",
+                "23:00" => "2️⃣3️⃣:0️⃣0️⃣",
+            ];
+            foreach ($data as $item) {
+                $shutdown_time = $time_format[$item['shutdown_time']];
+                $power_time = $time_format[$item['power_time']];
+
+                if($time > $item['shutdown_time'] && $item['power_time'] > $time){
+                    $text .= "$shutdown_time - $power_time <b>$item[status_name]</b>\n";
+                }else{
+                    $text .= "$shutdown_time - $power_time $item[status_name]\n";
+                }
+            }
+            return $text;
         }
 
         private function getKeyboardGroup($reply){

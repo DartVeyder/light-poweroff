@@ -20,18 +20,14 @@
     $stmt = $weekday->readOne($_GET);
     $num = $stmt->rowCount();
 
-    if($num > 0){
-        $weekday_arr = array();
-        $weekday_arr['records'] = array();
-    
+    if($num > 0){ 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // извлекаем строку
             extract($row);
-            $weekdays_item = array(
+            $weekday_arr = array(
                 "weekday_id" => $weekday_id,
                 "weekday_name" => $name
-            );
-            array_push($weekday_arr["records"], $weekdays_item);
+            ); 
         }
     
         // устанавливаем код ответа - 200 OK

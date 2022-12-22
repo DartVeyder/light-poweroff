@@ -4,7 +4,6 @@
     include_once "../../class/core.php";
     include('bot.php');
     include('../../vendor/autoload.php');
-    include('menu.php');
     use Telegram\Bot\Api;
 
     $telegram = new Api($config["bot"]["telegram"]["token"]);
