@@ -21,7 +21,7 @@
     // встановимо властивість ID запису для читання
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
     $shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
-
+    $shutdown_schedule->weekday_id = isset($_GET["weekday_id"]) ? $_GET["weekday_id"] : "";
     // получим графік відключення по групі
     $stmt = $shutdown_schedule->readGroup();
 

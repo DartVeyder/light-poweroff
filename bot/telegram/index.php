@@ -21,7 +21,7 @@
             $bot->getTextStart(); 
         break; 
     }
-
-    $bot->setRegion( $result);
+ 
+    $bot->callbackQuery( $result);
 
 ?>

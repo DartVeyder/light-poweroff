@@ -32,24 +32,24 @@
         }
 
         //метод для получення графіку відключення по групах
-        public function readGroup(){
+        public function readGroup(){ 
+            $wher_wd ="";
+            if($this->weekday_id){
+                $wher_wd = "AND s.weekday_id  = :weekday_id";
+            }
             $query = $this->getQuery();
             $query .=  "WHERE
-                    s.group_id = ? AND
-                    s.region_id  = ?
+                    s.group_id = :group_id AND
+                    s.region_id  = :region_id
+                    $wher_wd
                 ORDER BY
                 s.group_id ASC , s.weekday_id ASC";
-            ;
-                    
+            ;   
             // подготовка запроса
             $stmt = $this->conn->prepare($query);
 
-            // привязываем id товара, который будет получен
-            $stmt->bindParam(1, $this->group_id);
-            $stmt->bindParam(2, $this->region_id);
-
             // выполняем запрос
-            $stmt->execute(); 
+            $stmt->execute($_GET); 
             return $stmt;
         }
 

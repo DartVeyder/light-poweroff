@@ -32,23 +32,43 @@
                 "language_code" => $this->language_code
 
             ];
-            //$response = get($home_url_api . "/user/create.php?", $data);
+            $this->get($this->home_url_api . "/user/create.php?", $data);
         } 
  
-        public function setRegion( $result){
+        public function callbackQuery( $result){
             if(isset($result['callback_query'])){
                 $this->chat_id = $result['callback_query']['from']['id'];
+                $this->user_telegram_id = $result["callback_query"]["from"]["id"];
                 $data_callback = $result['callback_query']['data'];
-
+                $data = [ 
+                    "user_telegram_id" =>  $this->user_telegram_id,
+                ];
                 $callback = explode("_", $data_callback);
                 switch ($callback[0]) {
                     case 'region':
+                        $data["region_id" ] = $callback[1]; 
+                        
                         $reply = "Тепер виберіть вашу групу.";
-                         $this->getKeyboardGroup($reply);
+                        $this->getKeyboardGroup($reply);
                     break; 
+                    case 'group':
+                        $data["group_id" ] = $callback[1]; 
+                        $this->getShutdownSchedule();
+                    break;
                 } 
-              
+
+                $this->get($this->home_url_api . "/user/update.php?", $data);
             } 
+        }
+
+        private function getShutdownSchedule(){
+            $text = "Графік відключення";
+            $this->telegram->sendMessage(
+                [
+                    'chat_id'       => $this->chat_id, 
+                    'text'          => $text 
+                ]
+            );  
         }
 
         private function getKeyboardGroup($reply){
@@ -68,7 +88,7 @@
                 [
                     'chat_id'       => $this->chat_id, 
                     'text'          => $reply,
-                    'reply_markup'  => $reply_markup
+                    'reply_markup'  => $reply_markup 
                 ]
             );  
         }   
@@ -117,7 +137,7 @@
             Curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94  Safari/537.36');          
             Curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); $output = curl_exec($ch); if ( curl_errno($ch) ) return curl_error($ch);
             Curl_close($ch); 
-            return $output;
+            return $output ;
         } 
     }
 ?>
