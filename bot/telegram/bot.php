@@ -150,15 +150,20 @@
         }
 
         public function notification($telegram){
-            $response = $this->get($this->home_url_api . "/user/read.php");  
-            $data = json_decode($response, true);
-            
-            foreach ($data['records'] as $item) {
-                $text =  "Сповіщення для  $item[last_name] $item[first_name]";
+            $response_user = $this->get($this->home_url_api . "/user/read.php");  
+            $data = json_decode($response_user, true);
+            foreach ($data['records'] as $item) { 
+                
+                $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$item[group_id]&region_id=$item[region_id]") ;
+                $data_schedule = json_decode($response_schedule , true); 
+                foreach ($data_schedule['records'] as $schedule ) {
+                    $text = "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
+                }
+                
                 $telegram->sendMessage(
                     [
                         'chat_id'       => $item["user_telegram_id"], 
-                        'text'          => $text,
+                        'text'          => $text ,
                         'parse_mode'    => 'html'
                     ]
                 );
