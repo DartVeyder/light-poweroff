@@ -12,12 +12,12 @@
 
         public function __construct( $result)
         {
-            $this->chat_id          = $result["message"]["chat"]["id"];
-            $this->username         = $result["message"]["from"]["username"];
-            $this->user_telegram_id = $result["message"]["from"]["id"];
-            $this->first_name       = $result["message"]["from"]["first_name"];
-            $this->last_name        = $result["message"]["from"]["last_name"];
-            $this->language_code    = $result["message"]["from"]["language_code"];
+            $this->chat_id          = @$result["message"]["chat"]["id"];
+            $this->username         = @$result["message"]["from"]["username"];
+            $this->user_telegram_id = @$result["message"]["from"]["id"];
+            $this->first_name       = @$result["message"]["from"]["first_name"];
+            $this->last_name        = @$result["message"]["from"]["last_name"];
+            $this->language_code    = @$result["message"]["from"]["language_code"];
         }
 
         public function getTextStart(){
@@ -87,22 +87,14 @@
 
         private function getGenerateView($data){
             $text = "";
-            $text .= "({$data[0]["weekday_name"]}) \n{$data[0]["group_name"]} \n\n";
-            $hour = date("H:i");
-            $time = date("Y-m-d H:i");
-            $date = date("Y-m-d");
-            foreach ($data as $item) {
-                $shutdown_time = $date . " " . $item["shutdown_time"];
-                if( $item['shutdown_time'] > $item['power_time']){
-                    $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
-                }  
-                $power_time    = $date . " " .$item["power_time"];
-                $t = "$item[shutdown_time] -  $item[power_time] $item[status_name] ";
+            $text .= "({$data[0]["weekday_name"]}) \n{$data[0]["group_name"]} \n\n"; 
+            foreach ($data as $item) { 
+                $row_time = "$item[shutdown_time] -  $item[power_time] $item[status_name] ";
 
-                if($time > $shutdown_time &&  $power_time > $time){
-                    $text .= "➤<b>$t</b>\n";
+                if($item['now']){
+                    $text .= "➤ <b>$row_time</b>\n";
                 }else{
-                    $text .= "$t\n";
+                    $text .= "     $row_time\n";
                 }
             }
             return $text;
@@ -155,6 +147,24 @@
                     'reply_markup'  => $reply_markup
                 ]
             );  
+        }
+
+        public function notification($telegram){
+            $response = $this->get($this->home_url_api . "/user/read.php");  
+            $data = json_decode($response, true);
+            
+            foreach ($data['records'] as $item) {
+                $text =  "Сповіщення для  $item[last_name] $item[first_name]";
+                $telegram->sendMessage(
+                    [
+                        'chat_id'       => $item["user_telegram_id"], 
+                        'text'          => $text,
+                        'parse_mode'    => 'html'
+                    ]
+                );
+                echo $item['user_telegram_id'] . "<br>";
+                sleep(1);
+            }
         }
 
         private function get($url = '',$data = [] , $cookie = ''){

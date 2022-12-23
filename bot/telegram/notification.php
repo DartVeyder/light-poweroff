@@ -1,6 +1,4 @@
 <?php
-    error_reporting(0);
-
     include_once "../../class/core.php";
     include('bot.php');
     include('../../vendor/autoload.php');
@@ -8,19 +6,9 @@
 
     $telegram = new Api($config["bot"]["telegram"]["token"]);
     $result = $telegram->getWebhookUpdates();
-    $bot = new Bot($result); 
-    
-    $bot->telegram = $telegram;
+    $bot = new Bot( $result); 
     $bot->home_url_api = $home_url_api;
+    $text = "Сповіщення!!";
 
-    $text = $result["message"]["text"];
-    
-    switch ($text) {
-        case '/start':
-            $bot->getTextStart(); 
-        break; 
-    }
- 
-    $bot->callbackQuery( $result);
-
+    $bot->notification($telegram );
 ?>

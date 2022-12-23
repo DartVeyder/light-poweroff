@@ -31,12 +31,24 @@
     if($num > 0){
         $shutdown_schedule_arr = array();
         $shutdown_schedule_arr['records'] = array();
-
+        $date = date("Y-m-d");
+        $to_time = date("Y-m-d H:i");
         // отримуємо вміст нашої таблиці
         // fetch() быстрее, чем fetchAll()
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // извлекаем строку
             extract($row);
+                
+        if($weekday_id == date("N")){
+            $shutdown_time_now = $date . " " . $row['shutdown_time'] ;
+            
+            if($row['shutdown_time'] > $row['power_time']){
+                $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
+            }  
+            $power_time_now = $date . " " .$row['power_time'];
+        }
+
+       
             $shutdown_schedule_item = array(
                 "group_id" => $group_id,
                 "group_name" => $group_name,
@@ -49,6 +61,19 @@
                 "region_id"=> $region_id,
                 "region_name" => $region_name
             );
+
+            if($weekday_id == date("N")){
+                $shutdown_time_now = $date . " " . $row['shutdown_time'] ;
+                
+                if($row['shutdown_time'] > $row['power_time']){
+                    $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
+                }  
+
+                $power_time_now = $date . " " .$row['power_time'];
+                if($to_time > $shutdown_time_now &&  $power_time_now > $to_time){
+                    $shutdown_schedule_item['now'] = true;
+                }
+            } 
             array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
         }
 
