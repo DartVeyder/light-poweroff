@@ -206,7 +206,7 @@
         public function notification($telegram){
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
             $data = json_decode($response_user, true);
-            foreach ($data['records'] as $item) { 
+            $item = $data['records'][0];
                 
                 $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$item[group_id]&region_id=$item[region_id]") ;
                 $data_schedule = json_decode($response_schedule , true); 
@@ -222,8 +222,7 @@
                     ]
                 );
                 echo $item['user_telegram_id'] . "<br>";
-                sleep(1);
-            }
+               
         }
 
         private function get($url = '',$data = [] , $cookie = ''){
