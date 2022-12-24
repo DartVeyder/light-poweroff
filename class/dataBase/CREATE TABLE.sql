@@ -62,17 +62,18 @@ CREATE TABLE `weekdays`
 (
     `weekday_id`  int(11)        NOT NULL	AUTO_INCREMENT,
     `name`        varchar(256)   NOT NULL,
+	`short_name`        varchar(256)   NOT NULL,
     PRIMARY KEY (`weekday_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=8;
 
-INSERT INTO `weekdays` (`weekday_id`, `name`) VALUES
-	('1', 'Понеділок'),
-	('2', 'Вівторок'),
-	('3', 'Середа'),
-	('4', 'Четвер'),
-	('5', "П'ятниця"),
-	('6', 'Субота'),
-	('7', 'Неділя');
+INSERT INTO `weekdays` (`weekday_id`, `name`, `short_name`) VALUES
+	('1', 'Понеділок', 'ПН'),
+	('2', 'Вівторок', 'ВТ'),
+	('3', 'Середа', 'СР'),
+	('4', 'Четвер', 'ЧТ'),
+	('5', "П'ятниця", 'ПТ'),
+	('6', 'Субота', 'СБ'),
+	('7', 'Неділя', 'НД');
 
 CREATE TABLE `status` 
 (

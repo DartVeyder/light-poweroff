@@ -29,7 +29,8 @@
             extract($row);
             $weekdays_item = array(
                 "weekday_id" => $weekday_id,
-                "weekday_name" => $name
+                "weekday_name" => $name,
+                "weekday_short_name" => $short_name
             );
             array_push($weekday_arr["records"], $weekdays_item);
         }

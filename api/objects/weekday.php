@@ -14,7 +14,7 @@
 
         public function read(){
             $query = "SELECT
-                weekday_id, name
+                weekday_id, name, short_name
             FROM ".$this->table_name."
             ";
         
@@ -30,7 +30,7 @@
             
 
             $query = "SELECT
-                weekday_id, name
+                weekday_id, name, short_name
             FROM 
                 ".$this->table_name."
             WHERE 

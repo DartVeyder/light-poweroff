@@ -81,26 +81,33 @@
                     'chat_id'       => $this->chat_id, 
                     'text'          => $text ,
                     'parse_mode'    => 'html',
-                    'reply_markup'      => $reply_markup
+                    'reply_markup' => $reply_markup
                 ]
             );  
+           
         }
 
         private function getKeyboardWeekdays(){
-            $menu = 
-            [
-                [
-                    ['text'=>'ПН','callback_data'=>'weekday_1'],
-                    ['text'=>'ВТ','callback_data'=>'weekday_2'],
-                    ['text'=>'СР','callback_data'=>'weekday_3']
-                ],
-                [
-                    ['text'=>'ЧТ','callback_data'=>'weekday_4'],
-                    ['text'=>'ПТ','callback_data'=>'weekday_5'],
-                    ['text'=>'СБ','callback_data'=>'weekday_6'],
-                    ['text'=>'НД','callback_data'=>'weekday_7'],
-                ],
-            ];
+            $response = $this->get($this->home_url_api . "/weekday/read.php");   
+            $weekdays = json_decode($response, true);  
+            
+            $k = 0;
+            foreach ($weekdays['records'] as $key => $weekday) {
+                if(date("N") == $weekday['weekday_id']){
+                    $to_wd = "✅";
+                }else{
+                    $to_wd = "";
+                }
+                
+                $row =  ['text' => $weekday['weekday_short_name']." $to_wd", 'callback_data' => 'weekday_' . $weekday['weekday_id'] ];
+               if($weekday['weekday_id'] > 3){
+                $row_2[] = $row ;
+               }else{
+                $row_1[] = $row;
+               }
+            }
+            $menu[] = $row_1;
+            $menu[] = $row_2;
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
@@ -108,8 +115,7 @@
                     'resize_keyboard' => true
                 ]
             );
-            
-             
+
             return $reply_markup;
         }
 
@@ -154,7 +160,8 @@
             $response = $this->get($this->home_url_api . "/regions/read.php");   
             $regions_arr = json_decode($response, true);  
             foreach ($regions_arr['records'] as $key => $region) {
-                $menu_regions[] = [
+                $menu_regions[] = 
+                [
                     [
                         'text'          => $region['region_name'],
                         'callback_data' => 'region_' . $region['region_id']

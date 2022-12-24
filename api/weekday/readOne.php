@@ -26,7 +26,8 @@
             extract($row);
             $weekday_arr = array(
                 "weekday_id" => $weekday_id,
-                "weekday_name" => $name
+                "weekday_name" => $name,
+                "weekday_short_name" => $short_name
             ); 
         }
     
