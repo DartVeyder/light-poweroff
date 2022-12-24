@@ -75,14 +75,42 @@
             $response  = $this->get($this->home_url_api . "/shutdown_schedule/read_group.php?", ["group_id" => $result['group_id'], "region_id" => $result['region_id'], "weekday_id" => $weekday_id ]);
             $result = json_decode($response,true); 
             $text .= $this->getGenerateView($result['records']);
-
+            $reply_markup = $this->getKeyboardWeekdays();
             $this->telegram->sendMessage(
                 [
                     'chat_id'       => $this->chat_id, 
                     'text'          => $text ,
-                    'parse_mode'    => 'html'
+                    'parse_mode'    => 'html',
+                    'reply_markup'      => $reply_markup
                 ]
             );  
+        }
+
+        private function getKeyboardWeekdays(){
+            $menu = 
+            [
+                [
+                    ['text'=>'ПН','callback_data'=>'weekday_1'],
+                    ['text'=>'ВТ','callback_data'=>'weekday_2'],
+                    ['text'=>'СР','callback_data'=>'weekday_3']
+                ],
+                [
+                    ['text'=>'ЧТ','callback_data'=>'weekday_4'],
+                    ['text'=>'ПТ','callback_data'=>'weekday_5'],
+                    ['text'=>'СБ','callback_data'=>'weekday_6'],
+                    ['text'=>'НД','callback_data'=>'weekday_7'],
+                ],
+            ];
+
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            
+             
+            return $reply_markup;
         }
 
         private function getGenerateView($data){
