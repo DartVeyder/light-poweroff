@@ -207,21 +207,34 @@
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
             $data = json_decode($response_user, true);
             $item = $data['records'][0];
+            
                 
-                $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$item[group_id]&region_id=$item[region_id]") ;
-                $data_schedule = json_decode($response_schedule , true); 
-                foreach ($data_schedule['records'] as $schedule ) {
-                    $text = "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
-                }
+                    $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$item[group_id]&region_id=$item[region_id]") ;
+                    $data_schedule = json_decode($response_schedule , true); 
+                    foreach ($data_schedule['records'] as $schedule ) {
+            print_r($schedule['notification']);
+                        if(in_array(date('H:i'), $schedule['notification'])) {
+                            echo "Сповіщееня";
+                        }else{
+                            exit;
+                          
+                        }
+                        $text = $schedule["date"] == date("Y-m-d") ? "Сьогодні \n" :  "Завтра \n";
+                    
+                        $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
+                    }
+                    
+                    $telegram->sendMessage(
+                        [
+                            'chat_id'       => $item["user_telegram_id"], 
+                            'text'          => $text ,
+                            'parse_mode'    => 'html'
+                        ]
+                    );
+                    echo $item['user_telegram_id'] . "<br>";
+                 
+
                 
-                $telegram->sendMessage(
-                    [
-                        'chat_id'       => $item["user_telegram_id"], 
-                        'text'          => $text ,
-                        'parse_mode'    => 'html'
-                    ]
-                );
-                echo $item['user_telegram_id'] . "<br>";
                
         }
 

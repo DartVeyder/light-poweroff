@@ -211,7 +211,8 @@
                 $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$item[group_id]&region_id=$item[region_id]") ;
                 $data_schedule = json_decode($response_schedule , true); 
                 foreach ($data_schedule['records'] as $schedule ) {
-                    $text = "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
+                    $text = $schedule["date"] . "\n";
+                    $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                 }
                 
                 $telegram->sendMessage(

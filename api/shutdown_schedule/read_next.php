@@ -28,7 +28,8 @@
 
     $to_weekday_id = date('N');
     $today = date("H:i");
-
+//$today = "13:00";
+    $date = date("Y-m-d");
     $shutdown_schedule->to_weekday_id = $to_weekday_id;
     $shutdown_schedule->today =  $today;
 
@@ -47,11 +48,17 @@
            
             // извлекаем строку
             extract($row);
-
+        $notification = [];   
         $weekday_id_2 = date("N",strtotime('+1 day', strtotime(date('Y-m-d'))));   
         if ($weekday_id == $to_weekday_id || $weekday_id == $weekday_id_2) {
             
             if ($shutdown_time > $today) {
+                $notification[] = date('H:i',strtotime('-1 hour', strtotime($shutdown_time)));   
+                $notification[] = date('H:i',strtotime('-30 minute', strtotime($shutdown_time)));   
+                $notification[] = date('H:i',strtotime('-15 minute', strtotime($shutdown_time)));
+                $notification[] = $shutdown_time;
+                $notification[] = "01:45";
+
                 $shutdown_schedule_item = array(
                     "group_id" => $group_id,
                     "group_name" => $group_name,
@@ -63,7 +70,9 @@
                     "status_name" => $status_name,
                     "region_id" => $region_id,
                     "region_name" => $region_name,
-                    "today" => $today
+                    "today" => $today,
+                    "date" => $date,
+                    "notification" => $notification
                 );
                 
                 array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
@@ -71,7 +80,7 @@
             }
             if($row['shutdown_time'] > $row['power_time']){              
                 $today = "00:00";
-             
+                $date = date('Y-m-d',strtotime('+1 day', strtotime(date('Y-m-d'))));   
             }  
         }
             
