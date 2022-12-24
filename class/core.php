@@ -11,5 +11,13 @@ date_default_timezone_set($config["timezone"]);
 // URL домашней страницы
 $home_url_api = $config["home_url_api"];
 
+if($config["bot"]["telegram"]["test"]){
+    $token = $config["bot"]["telegram"]["token"]["test"];
+}else{
+    $token = $config["bot"]["telegram"]["token"]["prod"];
+}
+
+
+
 
 ?>
