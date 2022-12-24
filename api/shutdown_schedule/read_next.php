@@ -27,12 +27,7 @@
     $shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
 
     $to_weekday_id = date('N');
-    $today = date('H:i');
-
-    if($today > "21:00" && $today < "23:59"  ){
-        $to_weekday_id =  date('N', strtotime('+1 day', strtotime(date('Y-m-d'))));
-         $today = "00:00";
-    }
+    $today = date("H:i");
 
     $shutdown_schedule->to_weekday_id = $to_weekday_id;
     $shutdown_schedule->today =  $today;
@@ -49,21 +44,38 @@
         // отримуємо вміст нашої таблиці
         // fetch() быстрее, чем fetchAll()
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+           
             // извлекаем строку
             extract($row);
-            $shutdown_schedule_item = array(
-                "group_id" => $group_id,
-                "group_name" => $group_name,
-                "weekday_id" => $weekday_id,
-                "weekday_name" => $weekday_name,
-                "shutdown_time" => $shutdown_time,
-                "power_time" => $power_time,
-                "status_id" => $status_id,
-                "status_name" => $status_name,
-                "region_id"=> $region_id,
-                "region_name" => $region_name
-            );
-            array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
+
+        $weekday_id_2 = date("N",strtotime('+1 day', strtotime(date('Y-m-d'))));   
+        if ($weekday_id == $to_weekday_id || $weekday_id == $weekday_id_2) {
+            
+            if ($shutdown_time > $today) {
+                $shutdown_schedule_item = array(
+                    "group_id" => $group_id,
+                    "group_name" => $group_name,
+                    "weekday_id" => $weekday_id,
+                    "weekday_name" => $weekday_name,
+                    "shutdown_time" => $shutdown_time,
+                    "power_time" => $power_time,
+                    "status_id" => $status_id,
+                    "status_name" => $status_name,
+                    "region_id" => $region_id,
+                    "region_name" => $region_name,
+                    "today" => $today
+                );
+                
+                array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
+                break;
+            }
+            if($row['shutdown_time'] > $row['power_time']){              
+                $today = "00:00";
+             
+            }  
+        }
+            
+           
         }
 
         // встановлюємо код відповіді – 200 OK

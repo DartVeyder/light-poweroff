@@ -58,14 +58,10 @@
             $query = $this->getQuery();
             $query .=  "WHERE
                     s.group_id   = ? AND
-                    s.region_id  = ? AND
-                    s.weekday_id = ? AND
-                    t.shutdown_time > ? AND
-                    s.status_id IN (1,3)
+                    s.region_id  = ? AND  
+                    s.status_id IN (1,3) 
                 ORDER BY
-                    s.group_id ASC , s.weekday_id ASC
-                LIMIT 
-                    0,3";
+                    s.group_id ASC , s.weekday_id DESC";
             ;
                     
             // подготовка запроса
@@ -73,9 +69,7 @@
 
             // привязываем id товара, который будет получен
             $stmt->bindParam(1, $this->group_id);
-            $stmt->bindParam(2, $this->region_id);
-            $stmt->bindParam(3, $this->to_weekday_id);
-            $stmt->bindParam(4, $this->today);
+            $stmt->bindParam(2, $this->region_id);  
         
             
             // выполняем запрос

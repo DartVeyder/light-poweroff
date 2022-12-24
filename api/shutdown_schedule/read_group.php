@@ -21,7 +21,7 @@
     // встановимо властивість ID запису для читання
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
     $shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
-    $shutdown_schedule->to_weekday_id = isset($_GET["weekday_id"]) ? $_GET["weekday_id"] : "";
+    $shutdown_schedule->weekday_ids = isset($_GET["weekday_id"]) ? $_GET["weekday_id"] : "";
     // получим графік відключення по групі
     $stmt = $shutdown_schedule->readGroup();
 
@@ -38,17 +38,7 @@
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // извлекаем строку
             extract($row);
-                
-        if($weekday_id == date("N")){
-            $shutdown_time_now = $date . " " . $row['shutdown_time'] ;
-            
-            if($row['shutdown_time'] > $row['power_time']){
-                $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
-            }  
-            $power_time_now = $date . " " .$row['power_time'];
-        }
-
-       
+                 
             $shutdown_schedule_item = array(
                 "group_id" => $group_id,
                 "group_name" => $group_name,
