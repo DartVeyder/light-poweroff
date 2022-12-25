@@ -205,37 +205,40 @@
 
         public function notification($telegram){
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
-            $data = json_decode($response_user, true);
-            $item = $data['records'][0];
-            
-                
-                    $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$item[group_id]&region_id=$item[region_id]") ;
-                    $data_schedule = json_decode($response_schedule , true); 
-                    foreach ($data_schedule['records'] as $schedule ) {
-            print_r($schedule['notification']);
-                        if(in_array(date('H:i'), $schedule['notification'])) {
-                            echo "Сповіщееня";
-                        }else{
-                            exit;
-                          
-                        }
-                        $text = $schedule["date"] == date("Y-m-d") ? "Сьогодні \n" :  "Завтра \n";
+            $users = json_decode($response_user, true);
+            $message = [];
+            foreach ( $users['records']as $user) {
+                $message[$user['user_id']]['user_id'] =  $user['user_id'];
+                $message[$user['user_id']]['user_telegram_id'] = $user['user_telegram_id'];
+                if($user['notification']){
+                    $message[$user['user_id']]["notification"] = "Сповіщення включені";
+                    $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$user[group_id]&region_id=$user[region_id]") ;
+                    $data_schedule = json_decode($response_schedule , true);
+                    $schedule = $data_schedule['records'][0]; 
+                    //echo in_array(date('H:i'), $schedule['notification']) ? "Сповіщееня" : exit;
+                    $message[$user['user_id']]["next_notification"] = $schedule['shutdown_time'];
+                    if(in_array(date('H:i'), $schedule['notification']) ){
                     
+                        $text = $schedule["date"] == date("Y-m-d") ? "Сьогодні \n" :  "Завтра \n";
+                
                         $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
+                        
+                        $telegram->sendMessage(
+                            [
+                                'chat_id'       => $user["user_telegram_id"], 
+                                'text'          => $text ,
+                                'parse_mode'    => 'html'
+                            ]
+                        );
+                        echo $user['user_telegram_id'] . "<br>";
                     }
                     
-                    $telegram->sendMessage(
-                        [
-                            'chat_id'       => $item["user_telegram_id"], 
-                            'text'          => $text ,
-                            'parse_mode'    => 'html'
-                        ]
-                    );
-                    echo $item['user_telegram_id'] . "<br>";
-                 
-
-                
-               
+                }else{
+                $message[$user['user_id']]["notification"] = "Сповіщення відключені";
+                }
+            
+            }
+        return json_encode($message,1);
         }
 
         private function get($url = '',$data = [] , $cookie = ''){

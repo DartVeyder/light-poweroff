@@ -16,6 +16,7 @@
             public $language_code; 
             public $date_added;
             public $date_modified;
+            public $notification;
             // конструктор для підключення до бази даних 
             public function __construct($db)
             {
@@ -110,7 +111,7 @@
 
             public function read(){
                 $query = "SELECT 
-                u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.username, u.first_name, u.last_name, u.language_code, u.date_added, u.date_modified,
+                u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.username, u.first_name, u.last_name, u.language_code, u.notification, u.date_added, u.date_modified,
                 r.name as region_name,
                 gr.name as group_name
             FROM 
@@ -133,7 +134,7 @@
             public function readOne(){ 
                 $query = "
             SELECT 
-                u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.username, u.first_name, u.last_name, u.language_code, u.date_added, u.date_modified,
+                u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.username, u.first_name, u.last_name, u.language_code, u.notification, u.date_added, u.date_modified,
                 r.name as region_name,
                 gr.name as group_name
             FROM 
@@ -167,6 +168,7 @@
                     $this->first_name = $row['first_name'];
                     $this->last_name = $row['last_name'];
                     $this->language_code = $row['language_code'];
+                   $this->notification = $row['notification'];
                     $this->date_added = $row['date_added'];
                     $this->date_modified = $row['date_modified'];
 

@@ -49,6 +49,7 @@ if (!$error) {
         "first_name" => $user->first_name,
         "last_name" => $user->last_name,
         "language_code" => $user->language_code,
+        "notification" => $user->notification,
         "date_added" => $user->date_added,
         "date_modified" => $user->date_modified
     );

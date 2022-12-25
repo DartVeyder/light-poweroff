@@ -11,13 +11,14 @@ CREATE TABLE `users`
 	`last_name`	    	varchar(300)	NULL,
 	`username`	   		varchar(300)	NULL,
 	`language_code`	    varchar(300)	NULL,
+	`notification`	    tinyint(2)		NULL DEFAULT 1,
 	`date_added`		datetime 		NOT NULL,
 	`date_modified`		timestamp 		NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`user_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 INSERT INTO `users` (`user_id`, `user_telegram_id`, `group_id`, `region_id`, `first_name`, `last_name`, `username`, `language_code`, `date_added`, `date_modified`) VALUES
-	('1', '342424234', '1', '1', 'Ivan', 'Ivanov', 'ivan123', 'uk', '2022-12-20 10:00', '2022-12-20 10:00');
+	('1', '342424234', '1', '1', 'Ivan', 'Ivanov', 'ivan123', 'uk', '1', '2022-12-20 10:00', '2022-12-20 10:00');
 
 
 CREATE TABLE `cluster` 

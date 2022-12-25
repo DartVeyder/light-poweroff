@@ -38,6 +38,7 @@
                 "first_name" => $first_name,
                 "last_name" => $last_name,
                 "language_code" => $language_code,
+                "notification" => $notification,
                 "date_added" => $date_added,
                 "date_modified" => $date_modified
             );

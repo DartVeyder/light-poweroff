@@ -56,8 +56,7 @@
                 $notification[] = date('H:i',strtotime('-1 hour', strtotime($shutdown_time)));   
                 $notification[] = date('H:i',strtotime('-30 minute', strtotime($shutdown_time)));   
                 $notification[] = date('H:i',strtotime('-15 minute', strtotime($shutdown_time)));
-                $notification[] = $shutdown_time;
-                $notification[] = "01:45";
+                $notification[] = $shutdown_time; 
 
                 $shutdown_schedule_item = array(
                     "group_id" => $group_id,
