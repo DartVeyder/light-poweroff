@@ -45,7 +45,10 @@
         // отримуємо вміст нашої таблиці
         // fetch() быстрее, чем fetchAll()
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-           
+            if($row['weekday_id'] > $to_weekday_id){
+                $row = array_reverse($row);
+            }
+            
             // извлекаем строку
             extract($row);
         $notification = [];   

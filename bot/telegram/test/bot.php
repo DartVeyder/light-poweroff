@@ -5,7 +5,8 @@
         private $user_telegram_id;
         private $first_name;
         private $last_name;
-        private $language_code; 
+        private $language_code;
+        private $message_id;
 
         public $telegram;
         public $home_url_api;
@@ -18,6 +19,7 @@
             $this->first_name       = @$result["message"]["from"]["first_name"];
             $this->last_name        = @$result["message"]["from"]["last_name"];
             $this->language_code    = @$result["message"]["from"]["language_code"];
+             
         }
 
         public function getTextStart(){
@@ -39,6 +41,7 @@
             if(isset($result['callback_query'])){
                 $this->chat_id = $result['callback_query']['from']['id'];
                 $this->user_telegram_id = $result["callback_query"]["from"]["id"];
+            $this->message_id = $result["callback_query"]["message"]["message_id"];
                 $data_callback = $result['callback_query']['data'];
                 $data = [ 
                     "user_telegram_id" =>  $this->user_telegram_id,
@@ -49,6 +52,7 @@
                     case 'region':
                         $data["region_id" ] = $callback[1];  
                         $reply = "Тепер виберіть вашу групу.";
+                    
                         $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->getKeyboardGroup($reply);
                     break; 
@@ -59,7 +63,7 @@
                         $this->getShutdownSchedule();
                     break;
                 case 'weekday':
-                    $this->getShutdownSchedule($callback[1]);
+                    $this->getShutdownSchedule($callback[1],"inline_kb");
                     break;
                 } 
 
@@ -67,12 +71,13 @@
             } 
         }
 
-        public function getShutdownSchedule($weekday_id=""){
+        public function getShutdownSchedule($weekday_id="", $type = ''){
             $text = "";
             $text .= "Графік відключення на ";
             $today = date("d.m.Y");
             if(empty($weekday_id)){
                 $weekday_id = date("N");
+
             } 
             if($weekday_id == date("N")){
                 $text .= "сьогодні:\n$today ";
@@ -83,18 +88,41 @@
             $response  = $this->get($this->home_url_api . "/shutdown_schedule/read_group.php?", ["group_id" => $result['group_id'], "region_id" => $result['region_id'], "weekday_id" => $weekday_id ]);
             $result = json_decode($response,true); 
             $text .= $this->getGenerateView($result['records']);
+            
             $reply_markup = $this->getKeyboardWeekdays($weekday_id);
-            $this->telegram->sendMessage(
+            if ($type) {
+                $this->telegram->editMessageText(
+                    [
+                        'chat_id'       => $this->chat_id,
+                        'message_id'    => $this->message_id, 
+                        'text'          => $text ,
+                        'parse_mode'    => 'html',
+                        'reply_markup' => $reply_markup
+                    ]
+                ); 
+            }else{
+                $this->telegram->sendMessage(
+                    [
+                        'chat_id'       => $this->chat_id, 
+                        'text'          => $text ,
+                        'parse_mode'    => 'html',
+                        'reply_markup' => $reply_markup
+                    ]
+                ); 
+            }
+           
+            /*$this->telegram->sendMessage(
                 [
                     'chat_id'       => $this->chat_id, 
                     'text'          => $text ,
                     'parse_mode'    => 'html',
                     'reply_markup' => $reply_markup
                 ]
-            );  
+            );  */
            
         }
 
+        
         private function getKeyboardWeekdays($weekday_id){
             $response = $this->get($this->home_url_api . "/weekday/read.php");   
             $weekdays = json_decode($response, true);  
@@ -240,6 +268,7 @@
             }
         return json_encode($message,1);
         }
+
 
         private function get($url = '',$data = [] , $cookie = ''){
             $url .= http_build_query($data);

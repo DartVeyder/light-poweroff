@@ -61,7 +61,7 @@
                     s.region_id  = ? AND  
                     s.status_id IN (1,3) 
                 ORDER BY
-                   s.weekday_id DESC, t.shutdown_time ASC";
+                   s.weekday_id ASC, t.shutdown_time ASC";
             ;
                     
             // подготовка запроса
