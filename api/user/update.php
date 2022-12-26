@@ -19,6 +19,8 @@
     if(@$_GET["user_telegram_id"]){
     $data = $_GET;
     $data['date_modified'] = date("Y-m-d H:i:s");
+    $data["date_last_activity"] = date("Y-m-d H:i");
+    
     $result = $user->update($data, $_GET["user_telegram_id"]);
     if ($result["status"] == 'success') {
         // установим код ответа - 201 создано

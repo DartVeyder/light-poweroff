@@ -57,13 +57,15 @@
                         $this->getKeyboardGroup($reply);
                     break; 
                     case 'group':
-                        $data["group_id" ] = $callback[1]; 
+                        $data["group_id" ] = $callback[1];
+                        $data['notification'] = 1;
                         $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->replyKeyboardShutdownShedule();
                         $this->getShutdownSchedule();
                     break;
-                case 'weekday':
-                    $this->getShutdownSchedule($callback[1],"inline_kb");
+                    case 'weekday':
+                        $this->getShutdownSchedule($callback[1],"inline_kb");
+                        
                     break;
                 } 
 
@@ -88,7 +90,8 @@
             $response  = $this->get($this->home_url_api . "/shutdown_schedule/read_group.php?", ["group_id" => $result['group_id'], "region_id" => $result['region_id'], "weekday_id" => $weekday_id ]);
             $result = json_decode($response,true); 
             $text .= $this->getGenerateView($result['records']);
-            
+            $this->get($this->home_url_api . "/user/update.php?", [ "user_telegram_id" =>  $this->user_telegram_id,]);
+           
             $reply_markup = $this->getKeyboardWeekdays($weekday_id);
             if ($type) {
                 $this->telegram->editMessageText(
@@ -110,15 +113,6 @@
                     ]
                 ); 
             }
-           
-            /*$this->telegram->sendMessage(
-                [
-                    'chat_id'       => $this->chat_id, 
-                    'text'          => $text ,
-                    'parse_mode'    => 'html',
-                    'reply_markup' => $reply_markup
-                ]
-            );  */
            
         }
 
@@ -271,6 +265,7 @@
 
 
         private function get($url = '',$data = [] , $cookie = ''){
+            
             $url .= http_build_query($data);
             $ch = curl_init();
             Curl_setopt($ch, CURLOPT_URL, $url);
