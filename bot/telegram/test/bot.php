@@ -229,6 +229,7 @@
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
             $users = json_decode($response_user, true);
             $message = [];
+        
             foreach ( $users['records']as $user) {
                 $message[$user['user_id']]['user_id'] =  $user['user_id'];
                 $message[$user['user_id']]['user_telegram_id'] = $user['user_telegram_id'];
@@ -258,7 +259,7 @@
                 }else{
                 $message[$user['user_id']]["notification"] = "Сповіщення відключені";
                 }
-            
+                //usleep(100000);
             }
         return json_encode($message,1);
         }

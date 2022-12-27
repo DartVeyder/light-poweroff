@@ -207,6 +207,7 @@
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
             $users = json_decode($response_user, true);
             $message = [];
+            $hour = date('H:i');
             foreach ( $users['records']as $user) {
                 $message[$user['user_id']]['user_id'] =  $user['user_id'];
                 $message[$user['user_id']]['user_telegram_id'] = $user['user_telegram_id'];
@@ -215,29 +216,31 @@
                     $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$user[group_id]&region_id=$user[region_id]") ;
                     $data_schedule = json_decode($response_schedule , true);
                     $schedule = $data_schedule['records'][0]; 
-                     
                     $message[$user['user_id']]["notification"] = $schedule['notification'];
-                    if(in_array(date('H:i'), $schedule['notification']) ){
+                    if(in_array( $hour, $schedule['notification']) ){
                     
                         $text = $schedule["date"] == date("Y-m-d") ? "Сьогодні \n" :  "Завтра \n";
                 
                         $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                         
-                        $telegram->sendMessage(
+                        $response = $telegram->sendMessage(
                             [
                                 'chat_id'       => $user["user_telegram_id"], 
                                 'text'          => $text ,
                                 'parse_mode'    => 'html'
                             ]
                         );
-                        echo $user['user_telegram_id'] . "<br>";
+                        //echo $user['user_telegram_id'] . "<br>";
+                        $message[$user['user_id']]["response"] = $response;
                     }
-                    
+                $message[$user['user_id']]["hour"] = $hour;
+                
                 }else{
                 $message[$user['user_id']]["notification"] = "Сповіщення відключені";
                 }
-            
+                usleep(100000);
             }
+        $this->log(json_encode($message,1), "notifications");
         return json_encode($message,1);
         }
 
@@ -260,5 +263,17 @@
             Curl_close($ch); 
             return $output ;
         } 
+
+        private function log($text, $file_name){ 
+            $file = "logs/$file_name.json"; 
+            $fOpen = fopen($file, 'w+');
+            if ( $fOpen ){          
+                fwrite($fOpen, $text);
+                fclose($fOpen);
+            } else {
+                return 'Wrong open log-file.';
+            }
+                
+        }
     }
 ?>
