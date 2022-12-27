@@ -287,7 +287,7 @@
             $text = ""; 
             switch ($type) {
                 case 'create_user':
-                $text .= "Новий користувач $data[date_added]  $data[last_name] $data[first_name] [$result[status]]";
+                $text .= "Новий користувач $data[date_added]  $data[last_name] $data[first_name] $result[status]";
                 break; 
             }
  
