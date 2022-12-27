@@ -54,6 +54,7 @@
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1]; 
+                        $data['notification'] = 1;
                         $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->replyKeyboardShutdownShedule();
                         $this->getShutdownSchedule();
