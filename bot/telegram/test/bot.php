@@ -24,7 +24,7 @@
         }
 
         public function getTextStart(){
-            $reply = 'Привіт, цей бот буде вас попереджувати про відключення світла. Для початку виберіть свою область.';
+            $reply = 'Привіт, '. $this->first_name.'! Цей бот буде вас попереджувати про відключення світла. Для початку виберіть свою область.';
             $this->getKeyBoardRegion($reply); 
         
             $data = [
@@ -35,8 +35,9 @@
                 "language_code" => $this->language_code,
                 "telegram_chat_id" => $this->chat_id
             ];
-            $result = $this->get($this->home_url_api . "/user/create.php?", $data);
-           
+            $response = $this->get($this->home_url_api . "/user/create.php?", $data);
+            $result = json_decode($response, 1);
+            $this->notificationAdmin("create_user", $result);
             
         } 
  
@@ -59,7 +60,7 @@
                         $response = $this->get($this->home_url_api . "/user/update.php?", $data);
                         $result = json_decode($response, 1);
                         
-                            $this->notificationAdmin("create_user", $result);
+                           
                         
                         
                         $this->getKeyboardGroup($reply);
@@ -152,6 +153,8 @@
             }
             $menu[] = $row_1;
             $menu[] = $row_2;
+           // $menu[] = [['text' => "Змінити групу", 'callback_data' => 'edit_group']];
+            //$menu[] = [['text' => "Змінити область", 'callback_data' => 'edit_region']];
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
@@ -245,7 +248,7 @@
                 $message[$user['user_id']]['user_telegram_id'] = $user['user_telegram_id'];
                 if($user['notification']){
                     $message[$user['user_id']]["notification"] = "Сповіщення включені";
-                    $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?group_id=$user[group_id]&region_id=$user[region_id]") ;
+                    $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?",["group_id" => $user["group_id"], "region_id"=>$user["region_id"]]) ;
                     $data_schedule = json_decode($response_schedule , true);
                     $schedule = $data_schedule['records'][0]; 
                     $message[$user['user_id']]["notification"] = $schedule['notification'];
@@ -275,7 +278,8 @@
                 }else{
                 $message[$user['user_id']]["notification"] = "Сповіщення відключені";
                 }
-                usleep(100000);
+            
+                usleep(50000);
             }
         $this->log(json_encode($message,1), "notifications", "w+", 'json');
         return json_encode($message,1);
@@ -287,7 +291,7 @@
             $text = ""; 
             switch ($type) {
                 case 'create_user':
-                $text .= "Новий користувач $data[date_added]  $data[last_name] $data[first_name] $result[status]";
+                $text .= date("Y-m-d H:i:s")." Новий користувач $data[last_name] $data[first_name] $result[status]";
                 break; 
             }
  

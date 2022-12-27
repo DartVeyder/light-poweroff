@@ -26,69 +26,72 @@
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
     $shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
 
-    $to_weekday_id = date('N');
-    $today = date("H:i");
-//$today = "13:00";
-    $date = date("Y-m-d");
+    $to_weekday_id = date("N");
+    $date = date("Y-m-d ");
+    $datetime = date("Y-m-d H:i");
+/*
+    $to_weekday_id = 5;
+    $date = date("2022-12-23");
+    $datetime = date("2022-12-23 12:00");
+*/
     $shutdown_schedule->to_weekday_id = $to_weekday_id;
-    $shutdown_schedule->today =  $today;
 
     // получим графік відключення по групі
     $stmt = $shutdown_schedule->readNext();
 
     $num = $stmt->rowCount();
-
+    $shutdown_schedule_arr = array();
+    $shutdown_schedule_arr["metadata"][] = [
+        "datetime" => $datetime
+    ];
     if($num > 0){
-        $shutdown_schedule_arr = array();
+      
         $shutdown_schedule_arr['records'] = array();
 
+    
         // отримуємо вміст нашої таблиці
         // fetch() быстрее, чем fetchAll()
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if($row['weekday_id'] > $to_weekday_id){
-                $row = array_reverse($row);
-            }
             
             // извлекаем строку
-            extract($row);
-        $notification = [];   
-        $weekday_id_2 = date("N",strtotime('+1 day', strtotime(date('Y-m-d'))));   
-        if ($weekday_id == $to_weekday_id || $weekday_id == $weekday_id_2) {
-            
-            if ($shutdown_time > $today) {
-                $notification[] = date('H:i',strtotime('-1 hour', strtotime($shutdown_time)));   
-                $notification[] = date('H:i',strtotime('-30 minute', strtotime($shutdown_time)));   
-                $notification[] = date('H:i',strtotime('-15 minute', strtotime($shutdown_time)));
-                $notification[] = $shutdown_time; 
-
-                $shutdown_schedule_item = array(
-                    "group_id" => $group_id,
-                    "group_name" => $group_name,
-                    "weekday_id" => $weekday_id,
-                    "weekday_name" => $weekday_name,
-                    "shutdown_time" => $shutdown_time,
-                    "power_time" => $power_time,
-                    "status_id" => $status_id,
-                    "status_name" => $status_name,
-                    "region_id" => $region_id,
-                    "region_name" => $region_name,
-                    "today" => $today,
-                    "date" => $date,
-                    "notification" => $notification
-                );
-                
-                array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
-                break;
+                 extract($row);
+                $datetime_week =  getDatesWeekday($to_weekday_id, $weekday_id, $date);
+                $datetime_shutdown = $datetime_week . " " . $shutdown_time;
+            if ($date > $datetime_week) {
+            continue;
             }
-            if($row['shutdown_time'] > $row['power_time']){              
-                $today = "00:00";
-                $date = date('Y-m-d',strtotime('+1 day', strtotime(date('Y-m-d'))));   
-            }  
-        }
-            
+           
+            if ($datetime > $datetime_shutdown) {
+                continue;
+            }
+
+            $min = strtotime($datetime_shutdown) - strtotime($datetime) ;
+            $notification = [];
+            $notification[] = date('H:i', strtotime('-1 hour', strtotime($shutdown_time)));
+            $notification[] = date('H:i', strtotime('-30 minute', strtotime($shutdown_time)));
+            $notification[] = date('H:i', strtotime('-15 minute', strtotime($shutdown_time)));
+            $notification[] = $shutdown_time;
+
+            $shutdown_schedule_item = array(
+                "group_id" => $group_id,
+                "group_name" => $group_name,
+                "weekday_id" => $weekday_id,
+                "weekday_name" => $weekday_name,
+                "shutdown_time" => $shutdown_time,
+                "power_time" => $power_time,
+                "status_id" => $status_id,
+                "status_name" => $status_name,
+                "region_id" => $region_id,
+                "region_name" => $region_name,
+                "notification" => $notification,
+                "date" => $datetime_shutdown,
+                "min" => $min
+            );
+            array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
            
         }
-
+         
+       $shutdown_schedule_arr["records"][] = getNextShutdown($shutdown_schedule_arr["records"]);
         // встановлюємо код відповіді – 200 OK
         http_response_code(200);
 
@@ -103,5 +106,27 @@
         echo json_encode(array("message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
     }
 
+function getNextShutdown($data){
+    $arr_min = array_column($data, 'min');
+    asort($arr_min);
+    $id = array_key_first($arr_min);
+    return $data[$id];
+}
 
+function getDatesWeekday($to_weekday_id, $weekday_id,  $today){
+    if($to_weekday_id > $weekday_id ){
+        $add_day = -($to_weekday_id-$weekday_id);
+    }else if ($to_weekday_id < $weekday_id){
+        $add_day = $weekday_id - $to_weekday_id;
+    }
+    else{
+         $add_day = 0;
+    }
+
+    if($weekday_id == 1 && $to_weekday_id == 7){
+        $add_day = 1;
+    }
+
+    return date("Y-m-d",strtotime( "$add_day  day", strtotime($today)));  
+}
 ?>
