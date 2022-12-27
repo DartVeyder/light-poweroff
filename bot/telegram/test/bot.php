@@ -10,6 +10,7 @@
 
         public $telegram;
         public $home_url_api;
+        public $config;
 
         public function __construct( $result)
         {
@@ -34,7 +35,9 @@
                 "language_code" => $this->language_code,
                 "telegram_chat_id" => $this->chat_id
             ];
-            $this->get($this->home_url_api . "/user/create.php?", $data);
+            $result = $this->get($this->home_url_api . "/user/create.php?", $data);
+           
+            
         } 
  
         public function callbackQuery( $result){
@@ -53,13 +56,20 @@
                         $data["region_id" ] = $callback[1];  
                         $reply = "Тепер виберіть вашу групу.";
                     
-                        $this->get($this->home_url_api . "/user/update.php?", $data);
+                        $response = $this->get($this->home_url_api . "/user/update.php?", $data);
+                        $result = json_decode($response, 1);
+                        if($result['status'] == 'success'){
+                            $this->notificationAdmin("create_user", $result['data']);
+                        }
+                        
                         $this->getKeyboardGroup($reply);
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
                         $data['notification'] = 1;
-                        $this->get($this->home_url_api . "/user/update.php?", $data);
+                        $response = $this->get($this->home_url_api . "/user/update.php?", $data);
+                        $result = json_decode($response, 1);
+                        
                         $this->replyKeyboardShutdownShedule();
                         $this->getShutdownSchedule();
                     break;
@@ -267,15 +277,33 @@
                 }
                 usleep(100000);
             }
-        $this->log(json_encode($message,1), "notifications");
+        $this->log(json_encode($message,1), "notifications", "w+", 'json');
         return json_encode($message,1);
         }
 
-        private function log($text, $file_name){ 
-            $file = "logs/$file_name.json"; 
-            $fOpen = fopen($file, 'w+');
+        private function notificationAdmin($type, $data){ 
+            $text = ""; 
+            switch ($type) {
+                case 'create_user':
+                $text .= "Новий користувач  $data[last_name] $data[first_name]";
+                break; 
+            }
+ 
+            $this->telegram->sendMessage(
+                [
+                    'chat_id' => $this->config['bot']['telegram']['admin_id'],
+                    'text' => $text,
+                    'parse_mode' => 'html'
+                ]
+            ); 
+            $this->log($text, "notification_users", "a+" , 'txt');
+        }
+
+        private function log($text, $file_name, $mode, $type_file = 'txt'){ 
+            $file = "logs/$file_name.$type_file"; 
+            $fOpen = fopen($file, $mode);
             if ( $fOpen ){          
-                fwrite($fOpen, $text);
+                fwrite($fOpen, $text."\r");
                 fclose($fOpen);
             } else {
                 return 'Wrong open log-file.';
