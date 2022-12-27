@@ -247,15 +247,15 @@
                 $message[$user['user_id']]['user_id'] =  $user['user_id'];
                 $message[$user['user_id']]['user_telegram_id'] = $user['user_telegram_id'];
                 if($user['notification']){
-                    $message[$user['user_id']]["notification"] = "Сповіщення включені";
+                    $message[$user['user_id']]["notification_status"] = "Сповіщення включені";
                     $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?",["group_id" => $user["group_id"], "region_id"=>$user["region_id"]]) ;
                     $data_schedule = json_decode($response_schedule , true);
                     $schedule = $data_schedule['records'][0]; 
                     $message[$user['user_id']]["notification"] = $schedule['notification'];
                     if (in_array($hour, $schedule['notification'])) {
 
-                    $text = $schedule["date"] == date("Y-m-d") ? "Сьогодні \n" : "Завтра \n";
-
+                    $text = date("Y-m-d",strtotime($schedule["date"])) == date("Y-m-d") ? "Сьогодні " : "Завтра ";
+ 
                     $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                     try {
                         $status = "success";
@@ -276,9 +276,8 @@
                 $message[$user['user_id']]["hour"] = $hour;
                 
                 }else{
-                $message[$user['user_id']]["notification"] = "Сповіщення відключені";
-                }
-            
+                $message[$user['user_id']]["notification_status"] = "Сповіщення відключені";
+                } 
                 usleep(50000);
             }
         $this->log(json_encode($message,1), "notifications", "w+", 'json');

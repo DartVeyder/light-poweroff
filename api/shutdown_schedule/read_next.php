@@ -27,12 +27,12 @@
     $shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
 
     $to_weekday_id = date("N");
-    $date = date("Y-m-d ");
+    $date = date("Y-m-d");
     $datetime = date("Y-m-d H:i");
 /*
-    $to_weekday_id = 5;
-    $date = date("2022-12-23");
-    $datetime = date("2022-12-23 12:00");
+    $to_weekday_id = 7;
+    $date = date("2022-12-25");
+    $datetime = date("2022-12-25 13:00");
 */
     $shutdown_schedule->to_weekday_id = $to_weekday_id;
 
@@ -89,9 +89,10 @@
             );
             array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
            
+        
         }
-         
-       $shutdown_schedule_arr["records"][] = getNextShutdown($shutdown_schedule_arr["records"]);
+        
+        $shutdown_schedule_arr["records"] = [getNextShutdown($shutdown_schedule_arr["records"])];
         // встановлюємо код відповіді – 200 OK
         http_response_code(200);
 
@@ -110,6 +111,7 @@ function getNextShutdown($data){
     $arr_min = array_column($data, 'min');
     asort($arr_min);
     $id = array_key_first($arr_min);
+    
     return $data[$id];
 }
 
