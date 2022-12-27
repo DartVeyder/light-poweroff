@@ -58,9 +58,9 @@
                     
                         $response = $this->get($this->home_url_api . "/user/update.php?", $data);
                         $result = json_decode($response, 1);
-                        if($result['status'] == 'success'){
-                            $this->notificationAdmin("create_user", $result['data']);
-                        }
+                        
+                            $this->notificationAdmin("create_user", $result);
+                        
                         
                         $this->getKeyboardGroup($reply);
                     break; 
@@ -281,11 +281,13 @@
         return json_encode($message,1);
         }
 
-        private function notificationAdmin($type, $data){ 
+        private function notificationAdmin($type, $result){
+            $data = $result['data'];
+            
             $text = ""; 
             switch ($type) {
                 case 'create_user':
-                $text .= "Новий користувач  $data[last_name] $data[first_name]";
+                $text .= "Новий користувач $data[date_added]  $data[last_name] $data[first_name] [$result[status]]";
                 break; 
             }
  
