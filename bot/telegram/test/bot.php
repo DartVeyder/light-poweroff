@@ -242,6 +242,7 @@
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
             $users = json_decode($response_user, true);
             $message = [];
+           
             $hour = date('H:i');
             foreach ( $users['records']as $user) {
                 $message[$user['user_id']]['user_id'] =  $user['user_id'];
@@ -258,7 +259,7 @@
  
                     $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                     try {
-                        $status = "success";
+                        $status = "Відправлено";
                         $telegram->sendMessage(
                             [
                                 'chat_id' => $user["user_telegram_id"],
@@ -267,17 +268,22 @@
                             ]
                         );
                     } catch (Exception $e) {
-                        $status = 'Failed: ' . $e->getMessage();
+                        $status = 'Помилка: ' . $e->getMessage();
                     }
-
+                    
                     //echo $user['user_telegram_id'] . "<br>";
                     $message[$user['user_id']]["status_send"] = $status;
+                }else{
+                    $status = "В очікувані";
                 }     
                 $message[$user['user_id']]["hour"] = $hour;
                 
                 }else{
                 $message[$user['user_id']]["notification_status"] = "Сповіщення відключені";
                 } 
+
+                $text_log = date("Y-m-d H:i") . " [" . $schedule['shutdown_time'] . "] [" . $user["user_telegram_id"] . "] " ."[$status]";
+                $this->log( $text_log, "notifications", "a+", 'txt');
                 usleep(50000);
             }
         $this->log(json_encode($message,1), "notifications", "w+", 'json');

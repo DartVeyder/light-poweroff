@@ -67,10 +67,15 @@
 
             $min = strtotime($datetime_shutdown) - strtotime($datetime) ;
             $notification = [];
-            $notification[] = date('H:i', strtotime('-1 hour', strtotime($shutdown_time)));
-            $notification[] = date('H:i', strtotime('-30 minute', strtotime($shutdown_time)));
-            $notification[] = date('H:i', strtotime('-15 minute', strtotime($shutdown_time)));
-            $notification[] = $shutdown_time;
+
+            if($status_id == 3){
+                $notification[] = date('H:i', strtotime('-1 hour', strtotime($shutdown_time)));
+            }else{
+                $notification[] = date('H:i', strtotime('-1 hour', strtotime($shutdown_time)));
+                $notification[] = date('H:i', strtotime('-30 minute', strtotime($shutdown_time)));
+                $notification[] = date('H:i', strtotime('-15 minute', strtotime($shutdown_time)));
+            }
+            
 
             $shutdown_schedule_item = array(
                 "group_id" => $group_id,
