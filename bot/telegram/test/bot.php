@@ -61,7 +61,7 @@
                         $data["region_id" ] = $callback[1];  
                         $reply = "Тепер виберіть вашу групу.";
                         $this->get($this->home_url_api . "/user/update.php?", $data); 
-                        $this->getKeyboardGroup($reply);
+                        $this->getKeyboardGroup($reply, 'select');
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
@@ -81,7 +81,7 @@
                     break;
                     case 'edit-group':
                         $reply = "Виберіть вашу групу.";
-                        $this->getKeyboardGroup($reply); 
+                        $this->getKeyboardGroup($reply,'edit'); 
                     break;
                     case 'edit-region':
                         $reply = "Виберіть вашу область.";
@@ -221,7 +221,7 @@
             return $text;
         }
 
-        private function getKeyboardGroup($reply){
+        private function getKeyboardGroup($reply, $action){
             $menu = [[
                 ['text'=>'Група 1','callback_data'=>'group_1'],
                 ['text'=>'Група 2','callback_data'=>'group_2'],
@@ -234,13 +234,25 @@
                     'resize_keyboard' => true
                 ]
             );
-            $this->telegram->sendMessage(
-                [
-                    'chat_id'       => $this->chat_id, 
-                    'text'          => $reply,
-                    'reply_markup'  => $reply_markup 
-                ]
-            );  
+            if($action == "edit"){
+                $this->telegram->editMessageText(
+                    [
+                        'chat_id'       => $this->chat_id, 
+                        'message_id'    => $this->message_id,
+                        'text'          => $reply,
+                        'reply_markup'  => $reply_markup 
+                    ]
+                );  
+            }else{
+                $this->telegram->sendMessage(
+                    [
+                        'chat_id'       => $this->chat_id, 
+                        'text'          => $reply,
+                        'reply_markup'  => $reply_markup 
+                    ]
+                );  
+            }
+            
         }   
         
         //Кнопка reply 
