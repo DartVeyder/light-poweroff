@@ -42,46 +42,87 @@
         } 
  
         public function callbackQuery( $result){
+             
+            
+
             if(isset($result['callback_query'])){
                 $this->chat_id = $result['callback_query']['from']['id'];
                 $this->user_telegram_id = $result["callback_query"]["from"]["id"];
-            $this->message_id = $result["callback_query"]["message"]["message_id"];
+                $this->message_id = $result["callback_query"]["message"]["message_id"];
                 $data_callback = $result['callback_query']['data'];
                 $data = [ 
                     "user_telegram_id" =>  $this->user_telegram_id,
                     "telegram_chat_id" => $this->chat_id
                 ];
-                $callback = explode("_", $data_callback);
+                $callback = explode("_", $data_callback); 
+                $this->log(date("Y-m-d H:i:s"). " ".$callback[0], "callbackQuery", "a+" , 'txt');
                 switch ($callback[0]) {
                     case 'region':
                         $data["region_id" ] = $callback[1];  
                         $reply = "Тепер виберіть вашу групу.";
-                    
-                        $response = $this->get($this->home_url_api . "/user/update.php?", $data);
-                        $result = json_decode($response, 1);
-                        
-                           
-                        
-                        
+                        $this->get($this->home_url_api . "/user/update.php?", $data); 
                         $this->getKeyboardGroup($reply);
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
                         $data['notification'] = 1;
-                        $response = $this->get($this->home_url_api . "/user/update.php?", $data);
-                        $result = json_decode($response, 1);
-                        
+                        $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->replyKeyboardShutdownShedule();
                         $this->getShutdownSchedule();
                     break;
                     case 'weekday':
-                        $this->getShutdownSchedule($callback[1],"inline_kb");
-                        
+                        $this->getShutdownSchedule($callback[1],"inline_kb");   
                     break;
-                } 
-
-               
+                    case 'settings':
+                        $this->getKeyboardSettings();
+                    break;
+                    case 'back-shutdownShedule':
+                        $this->getShutdownSchedule('',"inline_kb");
+                    break;
+                    case 'edit-group':
+                        $reply = "Виберіть вашу групу.";
+                        $this->getKeyboardGroup($reply); 
+                    break;
+                    case 'edit-region':
+                        $reply = "Виберіть вашу область.";
+                        $this->getKeyBoardRegion($reply); 
+                    break;
+                };   
             } 
+        }
+
+        private function getKeyboardSettings(){
+            $text = "";
+            $text .= "<b>=============НАЛАШТУВАННЯ=============</b> \n\n";
+            $menu[] = [
+                ['text' => "Змінити групу", 'callback_data' => 'edit-group'  ],
+                ['text' => "Змінити область", 'callback_data' => 'edit-region']
+            ];
+            $menu[] = [['text' => "Сповіщення", 'callback_data' => 'edit-notification']];
+            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
+
+            $response = $this->get($this->home_url_api . "/user/readOne.php?", ["user_telegram_id" =>  $this->user_telegram_id]);
+            $result = json_decode($response,true);
+            $text .= "<b>Група: </b>" .$result['group_id'] . "\n";
+            $text .= "<b>Область: </b>" . $result['region_name'] . "\n";
+
+            $notification = $result['notification'] ? "включено" : "виключено";
+            $text .= "<b>Сповіщення: </b>" .  $notification . "\n";
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            $this->telegram->editMessageText(
+                [
+                    'chat_id'       => $this->chat_id,  
+                    'message_id'    => $this->message_id, 
+                    'text'          => $text,
+                    'reply_markup'  => $reply_markup,
+                    'parse_mode'    => 'html',
+                ]
+            );  
         }
 
         public function getShutdownSchedule($weekday_id="", $type = ''){
@@ -104,6 +145,7 @@
             $this->get($this->home_url_api . "/user/update.php?", [ "user_telegram_id" =>  $this->user_telegram_id,]);
            
             $reply_markup = $this->getKeyboardWeekdays($weekday_id);
+
             if ($type) {
                 $this->telegram->editMessageText(
                     [
@@ -124,7 +166,6 @@
                     ]
                 ); 
             }
-           
         }
 
         
@@ -132,29 +173,28 @@
             $response = $this->get($this->home_url_api . "/weekday/read.php");   
             $weekdays = json_decode($response, true);  
             
-            $k = 0;
             foreach ($weekdays['records'] as $weekday) {
                 if($weekday_id == $weekday['weekday_id']){
                     $to_wd = "✅";
                 }
                 else if(date("N") == $weekday['weekday_id']){
-                    $to_wd = "✔️";
+                    $to_wd = "☑️";
                 }
                 else {
-                    $to_wd = "";
+                    $to_wd = "  ";
                 }
                 
                 $row =  ['text' => $weekday['weekday_short_name']." $to_wd", 'callback_data' => 'weekday_' . $weekday['weekday_id'] ];
-               if($weekday['weekday_id'] > 3){
-                $row_2[] = $row ;
-               }else{
-                $row_1[] = $row;
-               }
+                if($weekday['weekday_id'] > 3){
+                    $row_2[] = $row ;
+                }else{
+                    $row_1[] = $row;
+                }
             }
             $menu[] = $row_1;
             $menu[] = $row_2;
-           // $menu[] = [['text' => "Змінити групу", 'callback_data' => 'edit_group']];
-            //$menu[] = [['text' => "Змінити область", 'callback_data' => 'edit_region']];
+            $menu[] = [['text' => "Налаштування", 'callback_data' => 'settings']];
+          
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
@@ -202,7 +242,8 @@
                 ]
             );  
         }   
-
+        
+        //Кнопка reply 
         private function replyKeyboardShutdownShedule(){
             $menu = [["Графік відключень"]];
             $reply = "Графік відключень";
@@ -255,35 +296,36 @@
                     $message[$user['user_id']]["notification"] = $schedule['notification'];
                     if (in_array($hour, $schedule['notification'])) {
 
-                    $text = date("Y-m-d",strtotime($schedule["date"])) == date("Y-m-d") ? "Сьогодні " : "Завтра ";
- 
-                    $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
-                    try {
-                        $status = "Відправлено";
-                        $telegram->sendMessage(
-                            [
-                                'chat_id' => $user["user_telegram_id"],
-                                'text' => $text,
-                                'parse_mode' => 'html'
-                            ]
-                        );
-                    } catch (Exception $e) {
-                        $status = 'Помилка: ' . $e->getMessage();
-                    }
-                    
-                    //echo $user['user_telegram_id'] . "<br>";
-                    $message[$user['user_id']]["status_send"] = $status;
-                }else{
-                    $status = "В очікувані";
-                }     
+                        $text = date("Y-m-d",strtotime($schedule["date"])) == date("Y-m-d") ? "Сьогодні " : "Завтра ";
+    
+                        $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
+                        try {
+                            $status = "Відправлено";
+                            $telegram->sendMessage(
+                                [
+                                    'chat_id' => $user["user_telegram_id"],
+                                    'text' => $text,
+                                    'parse_mode' => 'html'
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            $status = 'Помилка: ' . $e->getMessage();
+                        }
+                        
+                        //echo $user['user_telegram_id'] . "<br>";
+                        $message[$user['user_id']]["status_send"] = $status;
+                        $text_log = date("Y-m-d H:i") . " [" . $schedule['shutdown_time'] . "] [" . $user["user_telegram_id"] . "] " ."[$status]";
+                        $this->log( $text_log, "notifications", "a+", 'txt');
+                    }else{
+                        $status = "В очікувані";
+                    }     
                 $message[$user['user_id']]["hour"] = $hour;
                 
                 }else{
                 $message[$user['user_id']]["notification_status"] = "Сповіщення відключені";
                 } 
 
-                $text_log = date("Y-m-d H:i") . " [" . $schedule['shutdown_time'] . "] [" . $user["user_telegram_id"] . "] " ."[$status]";
-                $this->log( $text_log, "notifications", "a+", 'txt');
+              
                 usleep(50000);
             }
         $this->log(json_encode($message,1), "notifications", "w+", 'json');
