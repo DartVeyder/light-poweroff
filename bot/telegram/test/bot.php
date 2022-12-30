@@ -105,7 +105,7 @@
                 ['text' => "Включити ✅", 'callback_data' => 'notification_1'],
                 ['text' => "Виключити ❌", 'callback_data' => 'notification_0'],
             ];
-            $text = "<b>=============СПОВІЩЕННЯ=============</b> \n\n";
+            $text = "<b>»»»СПОВІЩЕННЯ«««</b> \n\n";
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
                     'inline_keyboard' => $menu,
@@ -125,11 +125,8 @@
 
         private function getKeyboardSettings($action){
             $text = "";
-            $text .= "<b>=============НАЛАШТУВАННЯ=============</b> \n\n";
-           /* $menu[] = [
-                ['text' => "Змінити групу", 'callback_data' => 'edit-group'  ],
-                ['text' => "Змінити область", 'callback_data' => 'edit-region']
-            ];*/
+            $text .= "<b>»»»НАЛАШТУВАННЯ«««</b> \n\n";    
+            
             $menu[] = [['text' => "Сповіщення", 'callback_data' => 'edit-notification']];
             $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
 
@@ -341,14 +338,26 @@
             $message = [];
            
             $hour = date('H:i');
-            foreach ( $users['records']as $user) {
+
+            $next_shutdown = [];
+            $n = 0;
+            foreach ( $users['records']as $key => $user) {
                 $message[$user['user_id']]['user_id'] =  $user['user_id'];
                 $message[$user['user_id']]['user_telegram_id'] = $user['user_telegram_id'];
                 if($user['notification']){
                     $message[$user['user_id']]["notification_status"] = "Сповіщення включені";
-                    $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?",["group_id" => $user["group_id"], "region_id"=>$user["region_id"]]) ;
-                    $data_schedule = json_decode($response_schedule , true);
-                    $schedule = $data_schedule['records'][0]; 
+                   
+               
+
+                    if(!@is_array($next_shutdown[@$user['region_id']][@$user['group_id']])){ 
+                        $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?",["group_id" => $user["group_id"], "region_id"=>$user["region_id"]]) ;
+                        $data_schedule = json_decode($response_schedule , true);
+                        $schedule = $data_schedule['records'][0]; 
+                        $next_shutdown[$user['region_id']][$user['group_id']] = $schedule;
+                    }else{
+                         $schedule = $next_shutdown[$user['region_id']][$user['group_id']];
+                    }
+                    
                     $message[$user['user_id']]["notification"] = $schedule['notification'];
                     if (in_array($hour, $schedule['notification'])) {
 
@@ -357,7 +366,7 @@
                         $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                         try {
                             $status = "Відправлено";
-                            $telegram->sendMessage(
+                            $telegram->setAsyncRequest(true)->sendMessage(
                                 [
                                     'chat_id' => $user["user_telegram_id"],
                                     'text' => $text,
@@ -384,6 +393,7 @@
               
                 usleep(50000);
             }
+        
         $this->log(json_encode($message,1), "notifications", "w+", 'json');
         return json_encode($message,1);
         }
