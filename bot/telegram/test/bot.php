@@ -430,14 +430,20 @@
             Curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // Check the source of the certificate
             Curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // Check if the SSL encryption algorithm exists from the certificate
             Curl_setopt($ch, CURLOPT_SSLVERSION,  CURL_SSLVERSION_TLSv1);//Set the SSL protocol version number
-    
+            curl_setopt($ch, CURLINFO_HEADER_OUT,true);
             If($cookie){
                 Curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
                 Curl_setopt ($ch, CURLOPT_REFERER, 'https://wx.qq.com');
             }
             Curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94  Safari/537.36');          
-            Curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); $output = curl_exec($ch); if ( curl_errno($ch) ) return curl_error($ch);
-            Curl_close($ch); 
+            Curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+            $output = curl_exec($ch); 
+            if ( curl_errno($ch) ) return curl_error($ch);
+            $info = curl_getinfo($ch);
+            Curl_close($ch);
+
+            $info = date("Y-m-d H:i:s")." [$info[http_code]] [$info[local_ip]] [$info[speed_download]] [$info[url]] ";
+            $this->log($info, "response_log", "a+", 'txt');
             return $output ;
         } 
     }
