@@ -55,7 +55,7 @@
                     "telegram_chat_id" => $this->chat_id
                 ];
                 $callback = explode("_", $data_callback); 
-                $this->log(date("Y-m-d H:i:s"). " ".$callback[0], "callbackQuery", "a+" , 'txt');
+                $this->log(date("Y-m-d H:i:s"). " ".$callback[0]. " ".$callback[1], "callbackQuery", "a+" , 'txt');
                 switch ($callback[0]) {
                     case 'region':
                         $data["region_id" ] = $callback[1];  
@@ -74,7 +74,7 @@
                         $this->getShutdownSchedule($callback[1],"inline_kb");   
                     break;
                     case 'settings':
-                        $this->getKeyboardSettings();
+                        $this->getKeyboardSettings('edit_message');
                     break;
                     case 'back-shutdownShedule':
                         $this->getShutdownSchedule('',"inline_kb");
@@ -87,27 +87,25 @@
                         $reply = "Виберіть вашу область.";
                         $this->getKeyBoardRegion($reply); 
                     break;
-                };   
+                    case 'edit-notification':
+                        $this->getKeyboardNotification();
+                    break;
+                    case 'notification': 
+                        $data['notification'] = $callback[1];
+                        $this->get($this->home_url_api . "/user/update.php?", $data);
+                        $this->getKeyboardSettings('edit_message');
+                    break;
+                };  
+                
             } 
         }
 
-        private function getKeyboardSettings(){
-            $text = "";
-            $text .= "<b>=============НАЛАШТУВАННЯ=============</b> \n\n";
+        private function getKeyboardNotification(){ 
             $menu[] = [
-                ['text' => "Змінити групу", 'callback_data' => 'edit-group'  ],
-                ['text' => "Змінити область", 'callback_data' => 'edit-region']
+                ['text' => "Включити ✅", 'callback_data' => 'notification_1'],
+                ['text' => "Виключити ❌", 'callback_data' => 'notification_0'],
             ];
-            $menu[] = [['text' => "Сповіщення", 'callback_data' => 'edit-notification']];
-            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
-
-            $response = $this->get($this->home_url_api . "/user/readOne.php?", ["user_telegram_id" =>  $this->user_telegram_id]);
-            $result = json_decode($response,true);
-            $text .= "<b>Група: </b>" .$result['group_id'] . "\n";
-            $text .= "<b>Область: </b>" . $result['region_name'] . "\n";
-
-            $notification = $result['notification'] ? "включено" : "виключено";
-            $text .= "<b>Сповіщення: </b>" .  $notification . "\n";
+            $text = "<b>=============СПОВІЩЕННЯ=============</b> \n\n";
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
                     'inline_keyboard' => $menu,
@@ -116,13 +114,59 @@
             );
             $this->telegram->editMessageText(
                 [
-                    'chat_id'       => $this->chat_id,  
-                    'message_id'    => $this->message_id, 
+                    'chat_id'       => $this->chat_id,    
+                    'message_id'    => $this->message_id,    
                     'text'          => $text,
                     'reply_markup'  => $reply_markup,
                     'parse_mode'    => 'html',
                 ]
             );  
+        }
+
+        private function getKeyboardSettings($action){
+            $text = "";
+            $text .= "<b>=============НАЛАШТУВАННЯ=============</b> \n\n";
+           /* $menu[] = [
+                ['text' => "Змінити групу", 'callback_data' => 'edit-group'  ],
+                ['text' => "Змінити область", 'callback_data' => 'edit-region']
+            ];*/
+            $menu[] = [['text' => "Сповіщення", 'callback_data' => 'edit-notification']];
+            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
+
+            $response = $this->get($this->home_url_api . "/user/readOne.php?", ["user_telegram_id" =>  $this->user_telegram_id]);
+            $result = json_decode($response,true);
+            $text .= "<b>Група: </b>" .$result['group_id'] . "\n";
+            $text .= "<b>Область: </b>" . $result['region_name'] . "\n";
+
+            $notification = $result['notification'] ? "включено✅" : "виключено❌";
+            $text .= "<b>Сповіщення: </b>" .  $notification . "\n";
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            if($action == 'edit_message'){
+                $this->telegram->editMessageText(
+                    [
+                        'chat_id'       => $this->chat_id,   
+                        'message_id'    => $this->message_id,    
+                        'text'          => $text,
+                        'reply_markup'  => $reply_markup,
+                        'parse_mode'    => 'html',
+                    ]
+                );  
+            }else{  
+                $this->telegram->sendMessage(
+                    [
+                        'chat_id'       => $this->chat_id,    
+                        'text'          => $text,
+                        'reply_markup'  => $reply_markup,
+                        'parse_mode'    => 'html',
+                    ]
+                );  
+            }
+            
         }
 
         public function getShutdownSchedule($weekday_id="", $type = ''){
