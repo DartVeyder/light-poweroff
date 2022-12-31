@@ -333,7 +333,26 @@
                 ]
             );  
         }
-
+        public function message($telegram){
+            $response_user = $this->get($this->home_url_api . "/user/read.php");  
+            $users = json_decode($response_user, true);
+            $text = 'Доброго вечора, кожному користувачу бота «Графік відключення світла». Вітаю вас з прийдешнім новим роком і з прийдешніми святами! Нехай Новий рік принесе багато радісних і щасливих днів! Бажаю, щоб в новому році здійснилися всі ваші мрії і бажання! Нехай дива трапляються частіше, ніж про них мріється! Нехай події будуть значними і красивими, а життя - благополучним і щасливим! А ще, побажаю те, чого ми найбільше чекаємо: нехай в наступному році вся русня здохне!
+            ';
+            foreach ($users['records'] as $key => $user) {
+                try {
+                    $status = "Відправлено";
+                    $telegram->setAsyncRequest(true)->sendMessage(
+                        [
+                            'chat_id' => $user["user_telegram_id"],
+                            'text' => $text,
+                            'parse_mode' => 'html'
+                        ]
+                    );
+                } catch (Exception $e) {
+                    $status = 'Помилка: ' . $e->getMessage();
+                }
+            }
+        }
         public function notification($telegram){
             $response_user = $this->get($this->home_url_api . "/user/read.php");  
             $users = json_decode($response_user, true);
