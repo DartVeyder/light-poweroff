@@ -3,6 +3,7 @@
             // підключення до бази даних і таблиці "users"
             private $conn;
             private $table_name = "users";
+            private $table_prefix;
     
             public $user_id;
             public $region_id;
@@ -18,9 +19,11 @@
             public $date_modified;
             public $notification;
             // конструктор для підключення до бази даних 
-            public function __construct($db)
+            public function __construct($db, $config)
             {
                 $this->conn = $db;
+                $this->table_prefix = $config['prefix'] . "_";
+                $this->table_name = $this->table_prefix . $this->table_name;
             }
             
             public function create($data){
@@ -118,10 +121,10 @@
             FROM 
                 ".$this->table_name." u
             LEFT JOIN
-                regions r
+                ".$this->table_prefix."regions r
                     ON u.region_id = r.region_id
             LEFT JOIN
-                cluster gr
+                ".$this->table_prefix."cluster gr
                     on u.group_id = gr.group_id";
         
                 // подготовка запроса
@@ -141,10 +144,10 @@
             FROM 
                 ".$this->table_name." u
             LEFT JOIN
-                regions r
+                ".$this->table_prefix."regions r
                     ON u.region_id = r.region_id
             LEFT JOIN
-                cluster gr
+                ".$this->table_prefix."cluster gr
                     on u.group_id = gr.group_id  
             WHERE 
                 u.user_telegram_id = ?

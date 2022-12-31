@@ -9,13 +9,12 @@
     include_once "../../class/dataBase/database.php";
     include_once "../objects/regions.php";
  
-    // получаем соединение с базой данных
-    $config_db = $config['database'];
+    // получаем соединение с базой данных 
     $database = new Database();
-    $db = $database->getConnection( $config_db );
+    $db = $database->getConnection(  $config['database']);
 
     // инициализируем объект
-    $regions = new regions($db);
+    $regions = new regions($db,  $config['database']); 
 
     $stmt = $regions->read();
     $num = $stmt->rowCount();

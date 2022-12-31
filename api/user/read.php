@@ -15,7 +15,7 @@
     $db = $database->getConnection( $config['database']);
 
     // инициализируем объект
-    $user = new User($db);
+    $user = new User($db,$config['database']);
      
     $stmt = $user->read();
     $num = $stmt->rowCount();

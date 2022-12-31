@@ -15,7 +15,7 @@ $database = new Database();
 $db = $database->getConnection($config_db );
 
 // инициализируем объект
-$shutdown_schedule = new ShutdownShedule($db);
+$shutdown_schedule = new ShutdownShedule($db,$config_db);
 
 $stmt = $shutdown_schedule->read();
 $num = $stmt->rowCount();

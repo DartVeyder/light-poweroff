@@ -188,7 +188,7 @@
             $reply_markup = $this->getKeyboardWeekdays($weekday_id);
 
             if ($type) {
-                $this->telegram->editMessageText(
+                $result = $this->telegram->editMessageText(
                     [
                         'chat_id'       => $this->chat_id,
                         'message_id'    => $this->message_id, 
@@ -198,7 +198,7 @@
                     ]
                 ); 
             }else{
-                $this->telegram->sendMessage(
+                $result = $this->telegram->sendMessage(
                     [
                         'chat_id'       => $this->chat_id, 
                         'text'          => $text ,
@@ -207,6 +207,8 @@
                     ]
                 ); 
             }
+
+            $this->log(json_encode($result,1), "getShutdownSchedule", "a+", 'json');
         }
 
         

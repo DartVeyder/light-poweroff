@@ -19,7 +19,7 @@
     $db = $database->getConnection($config_db);
 
     // ініціалізуємо об'єкт
-    $shutdown_schedule = new ShutdownShedule($db);
+    $shutdown_schedule = new ShutdownShedule($db,$config_db);
 
 
     // встановимо властивість ID запису для читання

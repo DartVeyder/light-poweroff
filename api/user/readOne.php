@@ -17,7 +17,7 @@ $database = new Database();
 $db = $database->getConnection($config['database']);
 $error = [];
 // подготовка объекта
-$user = new User($db);
+$user = new User($db,$config['database']);
 
 // установим свойство ID записи для чтения
 $user->user_telegram_id = @$_GET["user_telegram_id"];

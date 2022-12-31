@@ -14,7 +14,7 @@
 
     $database = new Database();
     $db = $database->getConnection($config['database']);
-    $user = new User($db);
+    $user = new User($db,$config['database']);
 
     if(
         !empty($_GET['user_telegram_id'])

@@ -4,16 +4,19 @@
         // підключення до бази даних і таблиці "shutdown_schedule"
         private $conn;
         private $table_name = "shutdown_schedule";
-
+        private $table_prefix;
         public $group_id; 
         public $today; 
         public $to_weekday_id;
         public $region_id;
 
         // конструктор для підключення до бази даних 
-        public function __construct($db)
+        public function __construct($db, $config)
         {
             $this->conn = $db;
+            $this->table_prefix = $config['prefix'] . "_";
+            $this->table_name = $this->table_prefix . $this->table_name;
+            
         }
 
         //метод для получення загального графіку відключення 
@@ -88,19 +91,19 @@
             FROM 
                 ".$this->table_name." s
                 LEFT JOIN
-                    weekdays w
+                    ".$this->table_prefix."weekdays w
                         ON s.weekday_id = w.weekday_id
                 LEFT JOIN
-                    time t 
+                ".$this->table_prefix."time t 
                         ON s.time_id = t.time_id
                 LEFT JOIN
-                    status st
+                ".$this->table_prefix."status st
                         ON s.status_id = st.status_id
                 LEFT JOIN
-                    cluster gr
+                ".$this->table_prefix."cluster gr
                         on s.group_id = gr.group_id 
                 LEFT JOIN
-                    regions r
+                ".$this->table_prefix."regions r
                         on s.region_id = r.region_id ";
             return $query;
         }

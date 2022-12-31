@@ -13,10 +13,11 @@
 
     // отримуємо з'єднання з базою даних 
     $database = new Database();
-    $db = $database->getConnection($config['database']);
+$config_db = $config['database'];
+    $db = $database->getConnection( $config_db);
 
     // ініціалізуємо об'єкт
-    $shutdown_schedule = new ShutdownShedule($db);
+    $shutdown_schedule = new ShutdownShedule($db,  $config_db);
     
     // встановимо властивість ID запису для читання
     $shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();

@@ -1,7 +1,7 @@
 DROP DATABASE `light_poweroff`;
 CREATE DATABASE `light_poweroff`;
 
-CREATE TABLE `users` 
+CREATE TABLE `lgtpwr_users` 
 (
     `user_id`	        int(11) 		NOT NULL AUTO_INCREMENT,
 	`user_telegram_id`	int(11)	 		NULL,	
@@ -18,33 +18,33 @@ CREATE TABLE `users`
     PRIMARY KEY (`user_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-INSERT INTO `users` (`user_id`, `user_telegram_id`, `group_id`, `region_id`, `first_name`, `last_name`, `username`, `language_code`, `notification`, `date_added`, `date_modified`) VALUES
+INSERT INTO `lgtpwr_users` (`user_id`, `user_telegram_id`, `group_id`, `region_id`, `first_name`, `last_name`, `username`, `language_code`, `notification`, `date_added`, `date_modified`) VALUES
 	('1', '342424234', '1', '1', 'Ivan', 'Ivanov', 'ivan123', 'uk', '1', '2022-12-20 10:00', '2022-12-20 10:00', '2022-12-20 10:00');
 
 
-CREATE TABLE `cluster` 
+CREATE TABLE `lgtpwr_cluster` 
 (
     `group_id`	int(11)			NOT NULL AUTO_INCREMENT,
     `name`		varchar(300)    NOT NULL,
     PRIMARY KEY (`group_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
 
-INSERT INTO `cluster` (`group_id`, `name`) VALUES
+INSERT INTO `lgtpwr_cluster` (`group_id`, `name`) VALUES
 	('1', 'Група 1'),
 	('2', 'Група 2'),
 	('3', 'Група 3');
 
-CREATE TABLE `regions`
+CREATE TABLE `lgtpwr_regions`
 (
     `region_id`	int(11)		  NOT NULL AUTO_INCREMENT,
     `name`		varchar(300)  NOT NULL,
     PRIMARY KEY (`region_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=2;
 
-INSERT INTO `regions` (`region_id`, `name`) VALUES
+INSERT INTO `lgtpwr_regions` (`region_id`, `name`) VALUES
 	('1', 'Львівська');
 	  
-CREATE TABLE IF NOT EXISTS  `time` 
+CREATE TABLE IF NOT EXISTS  `lgtpwr_time` 
 (
     `time_id`         int(11)		NOT NULL  AUTO_INCREMENT,
     `shutdown_time`   varchar(256)	NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS  `time`
     PRIMARY KEY (`time_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
 
-INSERT INTO `time` (`time_id`, `shutdown_time`, `power_time`) VALUES
+INSERT INTO `lgtpwr_time` (`time_id`, `shutdown_time`, `power_time`) VALUES
 	('1', '01:00', '05:00'),
 	('2', '05:00', '09:00'),
 	('3', '09:00', '13:00'),
@@ -60,7 +60,7 @@ INSERT INTO `time` (`time_id`, `shutdown_time`, `power_time`) VALUES
 	('5', '17:00', '21:00'),
 	('6', '21:00', '01:00');
 
-CREATE TABLE `weekdays` 
+CREATE TABLE `lgtpwr_weekdays` 
 (
     `weekday_id`  int(11)        NOT NULL	AUTO_INCREMENT,
     `name`        varchar(256)   NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `weekdays`
     PRIMARY KEY (`weekday_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=8;
 
-INSERT INTO `weekdays` (`weekday_id`, `name`, `short_name`) VALUES
+INSERT INTO `lgtpwr_weekdays` (`weekday_id`, `name`, `short_name`) VALUES
 	('1', 'Понеділок', 'ПН'),
 	('2', 'Вівторок', 'ВТ'),
 	('3', 'Середа', 'СР'),
@@ -77,19 +77,19 @@ INSERT INTO `weekdays` (`weekday_id`, `name`, `short_name`) VALUES
 	('6', 'Субота', 'СБ'),
 	('7', 'Неділя', 'НД');
 
-CREATE TABLE `status` 
+CREATE TABLE `lgtpwr_status` 
 (
     `status_id`	int(11)       NOT NULL AUTO_INCREMENT,
     `name`	    varchar(256)  NOT NULL,
     PRIMARY KEY (`status_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
 
-INSERT INTO `status` (`status_id`, `name`) VALUES
+INSERT INTO `lgtpwr_status` (`status_id`, `name`) VALUES
 	('1', 'Відключення електроенергії'),
 	('2', 'Електроенергія подається'),
 	('3', 'Можливе відключення електроенергії за необхідності');
 
-CREATE TABLE `shutdown_schedule` 
+CREATE TABLE `lgtpwr_shutdown_schedule` 
 (
     `shutdown_schedule_id`	int(11) AUTO_INCREMENT,
 	`region_id`  int(11)	NOT NULL,   
@@ -100,7 +100,7 @@ CREATE TABLE `shutdown_schedule`
     PRIMARY KEY (`shutdown_schedule_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=127;
 
-INSERT INTO `shutdown_schedule` (`shutdown_schedule_id`,`region_id`, `group_id`, `weekday_id`, `time_id`, `status_id`) VALUES
+INSERT INTO `lgtpwr_shutdown_schedule` (`shutdown_schedule_id`,`region_id`, `group_id`, `weekday_id`, `time_id`, `status_id`) VALUES
 	('1', '1', '1', '1', '1', '1'),
 	('2', '1', '2', '1', '1', '2'),
 	('3', '1', '3', '1', '1', '3'),
