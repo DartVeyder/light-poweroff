@@ -4,7 +4,7 @@ include_once "config.php";
 // показывать сообщения об ошибках
 ini_set("display_errors", 1);
 error_reporting(E_ALL);
-
+set_time_limit(0);
 //часовий пояс
 date_default_timezone_set($config["timezone"]);
 

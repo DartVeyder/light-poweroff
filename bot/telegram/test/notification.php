@@ -2,7 +2,7 @@
     include_once "../../../class/core.php";
     include('bot.php');
     include('../../../vendor/autoload.php');
-
+    set_time_limit(0);
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json; charset=UTF-8");
     use Telegram\Bot\Api;

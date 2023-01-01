@@ -13,7 +13,7 @@
     $bot->telegram = $telegram;
     $bot->home_url_api = $home_url_api;
     $bot->config = $config;
-    $text = $result["message"]["text"];
+    $text = @$result["message"]["text"];
     
     switch ($text) {
         case '/start':

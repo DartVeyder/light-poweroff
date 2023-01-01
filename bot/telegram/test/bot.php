@@ -255,7 +255,7 @@
             foreach ($data as $item) { 
                 $row_time = "$item[shutdown_time] -  $item[power_time] $item[status_name] ";
 
-                if($item['now']){
+                if(@$item['now']){
                     $text .= "➤ <b>$row_time</b>\n";
                 }else{
                     $text .= "     $row_time\n";
@@ -387,7 +387,7 @@
                         $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                         try {
                             $status = "Відправлено";
-                            $telegram->setAsyncRequest(true)->sendMessage(
+                            $telegram->sendMessage(
                                 [
                                     'chat_id' => $user["user_telegram_id"],
                                     'text' => $text,
@@ -409,9 +409,8 @@
                 
                 }else{
                 $message[$user['user_id']]["notification_status"] = "Сповіщення відключені";
-                } 
-
-              
+                }
+ 
                 usleep(50000);
             }
         
