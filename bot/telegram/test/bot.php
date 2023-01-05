@@ -98,9 +98,38 @@
                         $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->getKeyboardSettings('edit_message');
                     break;
+                case 'donat':
+                    $this->getDonate();
+                    break;
                 };  
                 
             } 
+        }
+
+        private function getDonate(){
+            $menu[] = [
+                ['text' => "Відправити донат", 'url' => 'https://send.monobank.ua/jar/3F5wzmExTi'], 
+            ];
+            
+            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
+
+            $text = "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат";
+        $text .= "https://send.monobank.ua/jar/3F5wzmExTi";
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            $this->telegram->editMessageText(
+                [
+                    'chat_id'       => $this->chat_id,     
+                    'message_id'    => $this->message_id,
+                    'text'          => $text,
+                    'reply_markup'  => $reply_markup,
+                    'parse_mode'    => 'html',
+                ]
+            );  
         }
 
         private function selectRegion($callback){
@@ -289,7 +318,7 @@
             $menu[] = $row_1;
             $menu[] = $row_2;
             $menu[] = [['text' => "Налаштування", 'callback_data' => 'settings']];
-          
+            $menu[] = [['text' => "Донат", 'callback_data' => 'donat']];
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
