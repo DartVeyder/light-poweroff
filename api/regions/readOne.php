@@ -16,17 +16,16 @@
     // инициализируем объект
     $regions = new regions($db,  $config['database']); 
 
-    $stmt = $regions->read();
+    $stmt = $regions->readOne($_GET);
     $num = $stmt->rowCount();
 
     if($num > 0){
-        $regions_arr = array();
-        $regions_arr['records'] = array();
+        $regions_arr = array(); 
     
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // извлекаем строку
             extract($row);
-            $regions_item = array(
+            $regions_arr = array(
                 "region_id" => $region_id,
                 "region_name" => $name,
                 "active" => $active,
@@ -34,8 +33,7 @@
                 "site" => $site,
                 "facebook" => $facebook,
                 "status" => $status
-            );
-            array_push($regions_arr["records"], $regions_item);
+            ); 
         }
     
         // устанавливаем код ответа - 200 OK

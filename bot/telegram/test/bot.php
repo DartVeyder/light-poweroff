@@ -54,14 +54,52 @@
                     "user_telegram_id" =>  $this->user_telegram_id,
                     "telegram_chat_id" => $this->chat_id
                 ];
-                $callback = explode("_", $data_callback); 
+                $callback = explode("_", $data_callback);
+
+                $name   = $callback[0];
+                $id     = $callback[1];
+                $active = $callback[2];
+
                 $this->log(date("Y-m-d H:i:s"). " ".$callback[0]. " ".$callback[1], "callbackQuery", "a+" , 'txt');
                 switch ($callback[0]) {
                     case 'region':
-                        $data["region_id" ] = $callback[1];  
-                        $reply = "Тепер виберіть вашу групу.";
-                        $this->get($this->home_url_api . "/user/update.php?", $data); 
-                        $this->getKeyboardGroup($reply, 'select');
+                        if($active == 1){
+                            $data["region_id" ] = $callback[1];  
+                            $reply = "Тепер виберіть вашу групу.";
+                            $this->get($this->home_url_api . "/user/update.php?", $data); 
+                            $this->getKeyboardGroup($reply, 'select');
+                        }else{
+                        $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
+                            $text .= "  Подивитись актуальний графік аварійних та планових відключень можна на сайті або у фейсбуці по посиланю нижче";
+                            
+                            $response = $this->get($this->home_url_api . "/regions/readOne.php?", ['region_id' => $id]);   
+                            $region_arr = json_decode($response, true); 
+                            
+                            $menu = [
+                                [
+                                    ['text'=>'Оф. сайт','url' =>  $region_arr['site']],
+                                ],
+                                [
+                                    ['text'=>'Фейсбук','url' =>  $region_arr['facebook']],
+                                ]
+                            ];
+                            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                                [
+                                    'inline_keyboard' => $menu,
+                                    'resize_keyboard' => true
+                                ]
+                            );
+
+                            $this->telegram->sendMessage( 
+                                [
+                                    'chat_id'       => $this->chat_id,  
+                                    'reply_markup' => $reply_markup,  
+                                    'text'          => $text, 
+                                    'parse_mode'    => 'html',
+                                ]
+                            );  
+                        }
+                        
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
@@ -309,16 +347,14 @@
         private function getKeyBoardRegion($reply){
             $response = $this->get($this->home_url_api . "/regions/read.php");   
             $regions_arr = json_decode($response, true);  
+            
             foreach ($regions_arr['records'] as $key => $region) {
-                $menu_regions[] = 
-                [
-                    [
-                        'text'          => $region['region_name'],
-                        'callback_data' => 'region_' . $region['region_id']
-                    ]
+                $keyboards[] = [
+                        'text' => $region['region_name'],
+                        'callback_data' => 'region_' . $region['region_id'] . "_" . $region['active']
                 ];
             } 
-
+            $menu_regions =  array_chunk($keyboards, 2);
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
                     'inline_keyboard' => $menu_regions,
@@ -421,12 +457,7 @@
         private function notificationAdmin($type, $result){
             $data = $result['data'];
             
-            $text = ""; 
-            switch ($type) {
-                case 'create_user':
-                $text .= date("Y-m-d H:i:s")." Новий користувач $data[last_name] $data[first_name] $result[status]";
-                break; 
-            }
+            $text = date("Y-m-d H:i:s")." Новий користувач $data[last_name] $data[first_name] $result[action]";
  
             $this->telegram->sendMessage(
                 [

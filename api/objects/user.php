@@ -52,6 +52,7 @@
                     return [ 
                         'status' => 'success',
                         "message" => "Користувач добавлений.",
+                        "action" => "create",
                         "data"  => $data
                     ];
                 } catch (Exception $ex) {
@@ -93,6 +94,7 @@
                         $error =  [
                             'status' => 'success',
                             "message" => "Дані користувача оновлено",
+                            "action" => "update",
                             "data" => $data
                         ];
                     }else{

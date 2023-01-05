@@ -14,12 +14,34 @@
 
         public function read(){
             $query = "SELECT
-                region_id, name
+                *
             FROM ".$this->table_name."
+            ORDER BY
+            name ASC
             ";
         
         // подготовка запроса
         $stmt = $this->conn->prepare($query);
+
+        // выполняем запрос
+        $stmt->execute();
+        return $stmt;
+        }
+
+        
+        public function readOne($data){
+            $query = "SELECT
+                *
+            FROM ".$this->table_name."
+            WHERE 
+                region_id = ?
+            LIMIT 
+                0,1
+            ";
+        
+        // подготовка запроса
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $data['region_id']);
 
         // выполняем запрос
         $stmt->execute();
