@@ -32,6 +32,7 @@
                 "number_groups" => $number_groups,
                 "site" => $site,
                 "facebook" => $facebook,
+                "alert" => $alert,
                 "status" => $status
             ); 
         }

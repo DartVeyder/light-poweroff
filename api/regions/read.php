@@ -33,6 +33,7 @@
                 "number_groups" => $number_groups,
                 "site" => $site,
                 "facebook" => $facebook,
+                "alert" => $alert,
                 "status" => $status
             );
             array_push($regions_arr["records"], $regions_item);

@@ -116,15 +116,15 @@
                 $this->getKeyboardGroup($reply, 'select');
             }else{
             $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
+               
+            if ($region_arr['status'] == 'free') {
                 $text .= "  Подивитись актуальний графік аварійних та планових відключень можна на сайті або у фейсбуці за посиланням нижче";
-                
-                
                 $menu = [
                     [
-                        ['text'=>'Оф. сайт','url' =>  $region_arr['site']],
+                        ['text' => 'Оф. сайт', 'url' => $region_arr['site']],
                     ],
                     [
-                        ['text'=>'Фейсбук','url' =>  $region_arr['facebook']],
+                        ['text' => 'Фейсбук', 'url' => $region_arr['facebook']],
                     ]
                 ];
                 $reply_markup = $this->telegram->replyKeyboardMarkup(
@@ -133,6 +133,13 @@
                         'resize_keyboard' => true
                     ]
                 );
+            }else{
+                if($region_arr['alert']){
+                    $text .= $region_arr['alert'];
+                }
+               
+            }
+               
 
                 $this->telegram->sendMessage( 
                     [
