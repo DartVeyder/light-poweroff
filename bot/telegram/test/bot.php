@@ -95,8 +95,11 @@
                         $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->getKeyboardSettings('edit_message');
                     break;
-                case 'donat':
-                    $this->getDonate();
+                    case 'donat':
+                        $this->getDonate();
+                    break;
+                    case 'developer':
+                        $this->getDeveloper();
                     break;
                 };  
                 
@@ -112,6 +115,28 @@
 
             $text = "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат";
         $text .= "https://send.monobank.ua/jar/3F5wzmExTi";
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            $this->telegram->editMessageText(
+                [
+                    'chat_id'       => $this->chat_id,     
+                    'message_id'    => $this->message_id,
+                    'text'          => $text,
+                    'reply_markup'  => $reply_markup,
+                    'parse_mode'    => 'html',
+                ]
+            );  
+        }
+        private function getDeveloper(){
+            
+            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
+
+            $text = "Розробив цього бота Дімон. По всіх питаннях, пропозиціях і скаргах звертайтеся сюди @dart_dim";
+       
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
                     'inline_keyboard' => $menu,
@@ -318,9 +343,14 @@
                     $row_1[] = $row;
                 }
             }
+            $item[] = $row_1;
+            $item[] = $row_2;
+            
+            $menu = $this->getKeyboardsMain();
             $menu[] = $row_1;
             $menu[] = $row_2;
-            $menu[] = $this->getKeyboardsMain();
+        $menu = array_reverse($menu);
+            $this->log(json_encode($menu,1), "keyboard", "w+", 'json');
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
@@ -334,8 +364,14 @@
 
         private function getKeyboardsMain(){
         $menu = 
-            [['text' => "Налаштування", 'callback_data' => 'settings'],
-            ['text' => "Донат", 'callback_data' => 'donat']] ;
+           [ [
+            ['text' => "Розробник", 'callback_data' => 'developer']
+            ],
+            [
+                ['text' => "Налаштування", 'callback_data' => 'settings'],
+                ['text' => "Донат", 'callback_data' => 'donat'],
+                
+            ]] ;
         return $menu;
         }
 
