@@ -49,6 +49,7 @@
                 $this->chat_id = $result['callback_query']['from']['id'];
                 $this->user_telegram_id = $result["callback_query"]["from"]["id"];
                 $this->message_id = $result["callback_query"]["message"]["message_id"];
+                $this->username         = @$result["callback_query"]["from"]["first_name"];
                 $data_callback = $result['callback_query']['data'];
                 $data = [ 
                     "user_telegram_id" =>  $this->user_telegram_id,
@@ -62,44 +63,8 @@
 
                 $this->log(date("Y-m-d H:i:s"). " ".$callback[0]. " ".$callback[1], "callbackQuery", "a+" , 'txt');
                 switch ($callback[0]) {
-                    case 'region':
-                        if($active == 1){
-                            $data["region_id" ] = $callback[1];  
-                            $reply = "Тепер виберіть вашу групу.";
-                            $this->get($this->home_url_api . "/user/update.php?", $data); 
-                            $this->getKeyboardGroup($reply, 'select');
-                        }else{
-                        $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
-                            $text .= "  Подивитись актуальний графік аварійних та планових відключень можна на сайті або у фейсбуці по посиланю нижче";
-                            
-                            $response = $this->get($this->home_url_api . "/regions/readOne.php?", ['region_id' => $id]);   
-                            $region_arr = json_decode($response, true); 
-                            
-                            $menu = [
-                                [
-                                    ['text'=>'Оф. сайт','url' =>  $region_arr['site']],
-                                ],
-                                [
-                                    ['text'=>'Фейсбук','url' =>  $region_arr['facebook']],
-                                ]
-                            ];
-                            $reply_markup = $this->telegram->replyKeyboardMarkup(
-                                [
-                                    'inline_keyboard' => $menu,
-                                    'resize_keyboard' => true
-                                ]
-                            );
-
-                            $this->telegram->sendMessage( 
-                                [
-                                    'chat_id'       => $this->chat_id,  
-                                    'reply_markup' => $reply_markup,  
-                                    'text'          => $text, 
-                                    'parse_mode'    => 'html',
-                                ]
-                            );  
-                        }
-                        
+                case 'region':
+                        $this->selectRegion($callback);
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
@@ -136,6 +101,48 @@
                 };  
                 
             } 
+        }
+
+        private function selectRegion($callback){
+            $id     = $callback[1];
+            $active = $callback[2];
+            $data["region_id" ] = $id;  
+                $response = $this->get($this->home_url_api . "/regions/readOne.php?", $data);   
+                $region_arr = json_decode($response, true); 
+                $this->log(date("Y-m-d H:i:s"). " ".$region_arr['region_name'] . ' ' . $this->username  , "regions_log", "a+" , 'txt');
+            if($active == 1){ 
+                $reply = "Тепер виберіть вашу групу.";
+                $this->get($this->home_url_api . "/user/update.php?", $data); 
+                $this->getKeyboardGroup($reply, 'select');
+            }else{
+            $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
+                $text .= "  Подивитись актуальний графік аварійних та планових відключень можна на сайті або у фейсбуці за посиланням нижче";
+                
+                
+                $menu = [
+                    [
+                        ['text'=>'Оф. сайт','url' =>  $region_arr['site']],
+                    ],
+                    [
+                        ['text'=>'Фейсбук','url' =>  $region_arr['facebook']],
+                    ]
+                ];
+                $reply_markup = $this->telegram->replyKeyboardMarkup(
+                    [
+                        'inline_keyboard' => $menu,
+                        'resize_keyboard' => true
+                    ]
+                );
+
+                $this->telegram->sendMessage( 
+                    [
+                        'chat_id'       => $this->chat_id,  
+                        'reply_markup' => $reply_markup,  
+                        'text'          => $text, 
+                        'parse_mode'    => 'html',
+                    ]
+                );  
+            }
         }
 
         private function getKeyboardNotification(){ 
@@ -456,8 +463,14 @@
 
         private function notificationAdmin($type, $result){
             $data = $result['data'];
+            $info = [
+                "success" => "Успішно",
+                "failed" => "Помилка",
+                "create" => "Добавився новий користувач",
+                "update" => "Оновленя даних користувача"
+            ];
             
-            $text = date("Y-m-d H:i:s")." Новий користувач $data[last_name] $data[first_name] $result[action]";
+            $text = date("Y-m-d H:i:s"). " " . $info[$result["action"]] . " $data[last_name] $data[first_name] [" . $info[$result["status"]]."]";
  
             $this->telegram->sendMessage(
                 [
