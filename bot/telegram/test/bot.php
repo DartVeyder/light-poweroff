@@ -57,14 +57,11 @@
                 ];
                 $callback = explode("_", $data_callback);
 
-                $name   = $callback[0];
-                $id     = $callback[1];
-                $active = $callback[2];
 
                 $this->log(date("Y-m-d H:i:s"). " ".$callback[0]. " ".$callback[1], "callbackQuery", "a+" , 'txt');
                 switch ($callback[0]) {
                 case 'region':
-                        $this->selectRegion($callback);
+                        $this->selectRegion($callback, $data);
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
@@ -132,16 +129,16 @@
             );  
         }
 
-        private function selectRegion($callback){
+        private function selectRegion($callback, $data){
             $id     = $callback[1];
             $active = $callback[2];
-            $data["region_id" ] = $id;  
-                $response = $this->get($this->home_url_api . "/regions/readOne.php?", $data);   
+                $data["region_id" ] = $callback[1];  
+                $response = $this->get($this->home_url_api . "/regions/readOne.php?", ["region_id" => $id]);   
                 $region_arr = json_decode($response, true); 
                 $this->log(date("Y-m-d H:i:s"). " ".$region_arr['region_name'] . ' ' . $this->username  , "regions_log", "a+" , 'txt');
-            if($active == 1){ 
-                $reply = "Тепер виберіть вашу групу.";
                 $this->get($this->home_url_api . "/user/update.php?", $data); 
+            if($region_arr['active']){  
+                $reply = "Тепер виберіть вашу групу.";
                 $this->getKeyboardGroup($reply, 'select');
             }else{
             $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
@@ -156,6 +153,7 @@
                         ['text' => 'Фейсбук', 'url' => $region_arr['facebook']],
                     ]
                 ];
+                $menu[] = $this->getKeyboardsMain();
                 $reply_markup = $this->telegram->replyKeyboardMarkup(
                     [
                         'inline_keyboard' => $menu,
@@ -166,7 +164,8 @@
                 if($region_arr['alert']){
                     $text .= $region_arr['alert'];
                 }
-               
+                
+                
             }
                
 
@@ -263,7 +262,11 @@
 
             $response  = $this->get($this->home_url_api . "/shutdown_schedule/read_group.php?", ["group_id" => $result['group_id'], "region_id" => $result['region_id'], "weekday_id" => $weekday_id ]);
             $result = json_decode($response,true); 
-            $text .= $this->getGenerateView($result['records']);
+            if($result['status']  == 'failed'){
+                $text = "На даний час графік відключення відсутній";    
+            }else{
+                $text .= $this->getGenerateView($result['records']);
+            }
             $this->get($this->home_url_api . "/user/update.php?", [ "user_telegram_id" =>  $this->user_telegram_id,]);
            
             $reply_markup = $this->getKeyboardWeekdays($weekday_id);
@@ -317,8 +320,7 @@
             }
             $menu[] = $row_1;
             $menu[] = $row_2;
-            $menu[] = [['text' => "Налаштування", 'callback_data' => 'settings']];
-            $menu[] = [['text' => "Донат", 'callback_data' => 'donat']];
+            $menu[] = $this->getKeyboardsMain();
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
@@ -328,6 +330,13 @@
             );
 
             return $reply_markup;
+        }
+
+        private function getKeyboardsMain(){
+        $menu = 
+            [['text' => "Налаштування", 'callback_data' => 'settings'],
+            ['text' => "Донат", 'callback_data' => 'donat']] ;
+        return $menu;
         }
 
         private function getGenerateView($data){

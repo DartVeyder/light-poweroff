@@ -78,7 +78,7 @@ $config_db = $config['database'];
         http_response_code(404);
 
         // повідомляємо користувачеві, що графіки відключень не знайдені
-        echo json_encode(array("message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
+        echo json_encode(array("status" => 'failed',"message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
     }
 
 ?>
