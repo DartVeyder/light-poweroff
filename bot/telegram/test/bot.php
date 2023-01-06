@@ -49,6 +49,7 @@
                 $this->chat_id = $result['callback_query']['from']['id'];
                 $this->user_telegram_id = $result["callback_query"]["from"]["id"];
                 $this->message_id = $result["callback_query"]["message"]["message_id"];
+                $this->username         = @$result["callback_query"]["from"]["first_name"];
                 $data_callback = $result['callback_query']['data'];
                 $data = [ 
                     "user_telegram_id" =>  $this->user_telegram_id,
@@ -56,14 +57,11 @@
                 ];
                 $callback = explode("_", $data_callback);
 
-                $name   = $callback[0];
-                $id     = $callback[1];
-                $active = $callback[2];
 
                 $this->log(date("Y-m-d H:i:s"). " ".$callback[0]. " ".$callback[1], "callbackQuery", "a+" , 'txt');
                 switch ($callback[0]) {
                 case 'region':
-                        $this->selectRegion($callback);
+                        $this->selectRegion($callback, $data);
                     break; 
                     case 'group':
                         $data["group_id" ] = $callback[1];
@@ -97,44 +95,102 @@
                         $this->get($this->home_url_api . "/user/update.php?", $data);
                         $this->getKeyboardSettings('edit_message');
                     break;
+                    case 'donat':
+                        $this->getDonate();
+                    break;
+                    case 'developer':
+                        $this->getDeveloper();
+                    break;
                 };  
                 
             } 
         }
 
-        private function selectRegion($callback){
+        private function getDonate(){
+            $menu[] = [
+                ['text' => "Відправити донат", 'url' => 'https://send.monobank.ua/jar/3F5wzmExTi'], 
+            ];
+            
+            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
+
+            $text = "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат";
+        $text .= "https://send.monobank.ua/jar/3F5wzmExTi";
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            $this->telegram->editMessageText(
+                [
+                    'chat_id'       => $this->chat_id,     
+                    'message_id'    => $this->message_id,
+                    'text'          => $text,
+                    'reply_markup'  => $reply_markup,
+                    'parse_mode'    => 'html',
+                ]
+            );  
+        }
+        private function getDeveloper(){
+            
+            $menu[] = [['text' => "« Назад до графіка відключень", 'callback_data' => 'back-shutdownShedule']];
+
+            $text = "Розробив цього бота Дімон. По всіх питаннях, пропозиціях і скаргах звертайтеся сюди @dart_dim";
+       
+            $reply_markup = $this->telegram->replyKeyboardMarkup(
+                [
+                    'inline_keyboard' => $menu,
+                    'resize_keyboard' => true
+                ]
+            );
+            $this->telegram->editMessageText(
+                [
+                    'chat_id'       => $this->chat_id,     
+                    'message_id'    => $this->message_id,
+                    'text'          => $text,
+                    'reply_markup'  => $reply_markup,
+                    'parse_mode'    => 'html',
+                ]
+            );  
+        }
+
+        private function selectRegion($callback, $data){
             $id     = $callback[1];
             $active = $callback[2];
-            $data["region_id" ] = $id;  
-
-            if($active == 1){ 
-
-                $reply = "Тепер виберіть вашу групу.";
+                $data["region_id" ] = $callback[1];  
+                $response = $this->get($this->home_url_api . "/regions/readOne.php?", ["region_id" => $id]);   
+                $region_arr = json_decode($response, true); 
+                $this->log(date("Y-m-d H:i:s"). " ".$region_arr['region_name'] . ' ' . $this->username  , "regions_log", "a+" , 'txt');
                 $this->get($this->home_url_api . "/user/update.php?", $data); 
+            if($region_arr['active']){  
+                $reply = "Тепер виберіть вашу групу.";
                 $this->getKeyboardGroup($reply, 'select');
             }else{
-             $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
+            $text = "   На жаль, графік по вашій області, поки, не доступний☹️ Не засмучуйтесь, бот постійно оновлюється і ми надішлемо вам сповіщення, як тільки графік по вашій області буде доступним)\n\n";
+               
+            if ($region_arr['status'] == 'free') {
                 $text .= "  Подивитись актуальний графік аварійних та планових відключень можна на сайті або у фейсбуці за посиланням нижче";
-                
-                $response = $this->get($this->home_url_api . "/regions/readOne.php?", $data);   
-                $region_arr = json_decode($response, true); 
-                if($region_arr['status'] == 'free'){
-                    
-                }
-                $menu = [
-                    [
-                        ['text'=>'Оф. сайт','url' =>  $region_arr['site']],
-                    ],
-                    [
-                        ['text'=>'Фейсбук','url' =>  $region_arr['facebook']],
-                    ]
-                ];
+               
+               $menu = $this->getKeyboardsMain();
+               
+               $menu[] = [['text' => 'Фейсбук', 'url' => $region_arr['facebook']]];
+               $menu[] = [['text' => 'Оф. сайт', 'url' => $region_arr['site']]];
+              
+            
                 $reply_markup = $this->telegram->replyKeyboardMarkup(
                     [
-                        'inline_keyboard' => $menu,
+                        'inline_keyboard' => array_reverse($menu),
                         'resize_keyboard' => true
                     ]
                 );
+            }else{
+                if($region_arr['alert']){
+                    $text .= $region_arr['alert'];
+                }
+                
+                
+            }
+               
 
                 $this->telegram->sendMessage( 
                     [
@@ -229,7 +285,11 @@
 
             $response  = $this->get($this->home_url_api . "/shutdown_schedule/read_group.php?", ["group_id" => $result['group_id'], "region_id" => $result['region_id'], "weekday_id" => $weekday_id ]);
             $result = json_decode($response,true); 
-            $text .= $this->getGenerateView($result['records']);
+            if($result['status']  == 'failed'){
+                $text = "На даний час графік відключення відсутній";    
+            }else{
+                $text .= $this->getGenerateView($result['records']);
+            }
             $this->get($this->home_url_api . "/user/update.php?", [ "user_telegram_id" =>  $this->user_telegram_id,]);
            
             $reply_markup = $this->getKeyboardWeekdays($weekday_id);
@@ -281,10 +341,14 @@
                     $row_1[] = $row;
                 }
             }
+            $item[] = $row_1;
+            $item[] = $row_2;
+            
+            $menu = $this->getKeyboardsMain();
             $menu[] = $row_1;
             $menu[] = $row_2;
-            $menu[] = [['text' => "Налаштування", 'callback_data' => 'settings']];
-          
+        $menu = array_reverse($menu);
+            $this->log(json_encode($menu,1), "keyboard", "w+", 'json');
 
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [
@@ -294,6 +358,19 @@
             );
 
             return $reply_markup;
+        }
+
+        private function getKeyboardsMain(){
+        $menu = 
+           [ [
+            ['text' => "Розробник", 'callback_data' => 'developer']
+            ],
+            [
+                ['text' => "Налаштування", 'callback_data' => 'settings'],
+                ['text' => "Донат", 'callback_data' => 'donat'],
+                
+            ]] ;
+        return $menu;
         }
 
         private function getGenerateView($data){
@@ -418,10 +495,8 @@
                     if(!@is_array($next_shutdown[@$user['region_id']][@$user['group_id']])){ 
                         $response_schedule = $this->get($this->home_url_api . "/shutdown_schedule/read_next.php?",["group_id" => $user["group_id"], "region_id"=>$user["region_id"]]) ;
                         $data_schedule = json_decode($response_schedule , true);
-                    if (@$data_schedule['status'] != 'failed') {
-                        $schedule = $data_schedule['records'][0];
+                        $schedule = $data_schedule['records'][0]; 
                         $next_shutdown[$user['region_id']][$user['group_id']] = $schedule;
-                    }
                     }else{
                          $schedule = $next_shutdown[$user['region_id']][$user['group_id']];
                     }
@@ -442,12 +517,12 @@
                                 ]
                             );
                         } catch (Exception $e) {
+                            $status = 'Помилка: ' . $e->getMessage();
                             $data = [
-                                "user_telegram_id" => $user["user_telegram_id"],
-                                "active" => 0
+                                'user_telegram_id' => $user["user_telegram_id"],
+                                'active' => 0
                             ];
                             $this->get($this->home_url_api . "/user/update.php?", $data);
-                            $status = 'Помилка: ' . $e->getMessage();
                         }
                         
                         //echo $user['user_telegram_id'] . "<br>";
