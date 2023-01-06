@@ -170,18 +170,16 @@
                
             if ($region_arr['status'] == 'free') {
                 $text .= "  Подивитись актуальний графік аварійних та планових відключень можна на сайті або у фейсбуці за посиланням нижче";
-                $menu = [
-                    [
-                        ['text' => 'Оф. сайт', 'url' => $region_arr['site']],
-                    ],
-                    [
-                        ['text' => 'Фейсбук', 'url' => $region_arr['facebook']],
-                    ]
-                ];
-                $menu[] = $this->getKeyboardsMain();
+               
+               $menu = $this->getKeyboardsMain();
+               
+               $menu[] = [['text' => 'Фейсбук', 'url' => $region_arr['facebook']]];
+               $menu[] = [['text' => 'Оф. сайт', 'url' => $region_arr['site']]];
+              
+            
                 $reply_markup = $this->telegram->replyKeyboardMarkup(
                     [
-                        'inline_keyboard' => $menu,
+                        'inline_keyboard' => array_reverse($menu),
                         'resize_keyboard' => true
                     ]
                 );
