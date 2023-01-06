@@ -17,7 +17,7 @@
     // инициализируем объект
     $user = new User($db,$config['database']);
      
-    $stmt = $user->read();
+    $stmt = $user->read($_GET);
     $num = $stmt->rowCount();
 
     if($num > 0){
@@ -39,6 +39,7 @@
                 "last_name" => $last_name,
                 "language_code" => $language_code,
                 "notification" => $notification,
+                "active" => $active,
                 "date_added" => $date_added,
                 "date_modified" => $date_modified
             );

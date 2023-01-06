@@ -115,9 +115,16 @@
                 } 
             }
 
-            public function read(){
+            public function read($where = []){
+                $str_where = "";
+                if ($where) {
+                    foreach ($where as $key => $item) {
+                        $set_arr[] = "u.$key = :$key";
+                    } 
+                    $str_where = " WHERE " . implode(",", $set_arr);
+                }
                 $query = "SELECT 
-                u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.username, u.first_name, u.last_name, u.language_code, u.notification, u.date_added, u.date_modified,
+                u.user_id, u.region_id, u.user_telegram_id, u.group_id, u.username, u.first_name, u.last_name, u.language_code, u.notification,u.active, u.date_added, u.date_modified,
                 r.name as region_name,
                 gr.name as group_name
             FROM 
@@ -127,16 +134,17 @@
                     ON u.region_id = r.region_id
             LEFT JOIN
                 ".$this->table_prefix."cluster gr
-                    on u.group_id = gr.group_id";
+                    on u.group_id = gr.group_id 
+                $str_where";
         
                 // подготовка запроса
                 $stmt = $this->conn->prepare($query);
-
+              
                 // выполняем запрос
-                $stmt->execute();
+                $stmt->execute($where); 
                 return $stmt;
             }
-
+           
             public function readOne(){ 
                 $query = "
             SELECT 
