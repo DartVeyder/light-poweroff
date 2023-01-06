@@ -337,7 +337,7 @@
                 $row =  ['text' => $weekday['weekday_short_name']." $to_wd", 'callback_data' => 'weekday_' . $weekday['weekday_id'] ];
                 if($weekday['weekday_id'] > 3){
                     $row_2[] = $row ;
-                }else{
+                }else{ 
                     $row_1[] = $row;
                 }
             }
