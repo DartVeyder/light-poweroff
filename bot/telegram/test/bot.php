@@ -520,7 +520,7 @@
                             $data = [
                                 "user_telegram_id" => $user["user_telegram_id"],
                                 "active" => 0
-                            ];
+                            ]; 
                             $this->get($this->home_url_api . "/user/update.php?", $data);
                             $status = 'Помилка: ' . $e->getMessage();
                         }
