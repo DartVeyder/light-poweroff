@@ -337,7 +337,7 @@
                 $row =  ['text' => $weekday['weekday_short_name']." $to_wd", 'callback_data' => 'weekday_' . $weekday['weekday_id'] ];
                 if($weekday['weekday_id'] > 3){
                     $row_2[] = $row ;
-                }else{
+                }else{ 
                     $row_1[] = $row;
                 }
             }
@@ -517,12 +517,12 @@
                                 ]
                             );
                         } catch (Exception $e) {
-                            $status = 'Помилка: ' . $e->getMessage();
                             $data = [
-                                'user_telegram_id' => $user["user_telegram_id"],
-                                'active' => 0
+                                "user_telegram_id" => $user["user_telegram_id"],
+                                "active" => 0
                             ];
                             $this->get($this->home_url_api . "/user/update.php?", $data);
+                            $status = 'Помилка: ' . $e->getMessage();
                         }
                         
                         //echo $user['user_telegram_id'] . "<br>";

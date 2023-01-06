@@ -42,7 +42,7 @@
     $num = $stmt->rowCount();
     $shutdown_schedule_arr = array();
     $shutdown_schedule_arr["metadata"][] = [
-        "datetime" => $datetime,
+        "datetime" => $datetime
     ];
     if($num > 0){
       
@@ -100,7 +100,7 @@
         http_response_code(404);
 
         // повідомляємо користувачеві, що графіки відключень не знайдені
-        echo json_encode(array("status" => "failed","message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
+        echo json_encode(array("message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
     }
 
 function getNextShutdown($data){
