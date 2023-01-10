@@ -101,6 +101,18 @@
                     case 'developer':
                         $this->getDeveloper();
                     break;
+                    case 'notification-off':
+                        $data['notification'] = 0;
+                        $this->get($this->home_url_api . "/user/update.php?", $data);
+                        $text = "Сповіщення виключено";
+                        $this->telegram->sendMessage( 
+                            [
+                                'chat_id'       => $this->chat_id,   
+                                'text'          => $text, 
+                                'parse_mode'    => 'html',
+                            ]
+                        );  
+                    break;
                 };  
                 
             } 
@@ -509,10 +521,18 @@
                         $text .= "<b>➤$schedule[shutdown_time] - $schedule[power_time]  $schedule[status_name] </b>\n";
                         try {
                             $status = "Відправлено";
+                            $menu = [[['text' => "Виключити сповіщення", 'callback_data' => 'notification-off']]];
+                            $reply_markup = $telegram->replyKeyboardMarkup(
+                                [
+                                    'inline_keyboard' => $menu,
+                                    'resize_keyboard' => true
+                                ]
+                            );
                             $telegram->sendMessage(
                                 [
                                     'chat_id' => $user["user_telegram_id"],
                                     'text' => $text,
+                                    'reply_markup' => $reply_markup,
                                     'parse_mode' => 'html'
                                 ]
                             );
@@ -537,7 +557,7 @@
                 }else{
                 $message[$user['user_id']]["notification_status"] = "Сповіщення відключені";
                 }
- 
+            
                 usleep(50000);
             }
         
