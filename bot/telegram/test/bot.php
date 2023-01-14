@@ -357,8 +357,9 @@
             $item[] = $row_2;
             
             $menu = $this->getKeyboardsMain();
-            $menu[] = $row_1;
             $menu[] = $row_2;
+            $menu[] = $row_1;
+            
         $menu = array_reverse($menu);
             $this->log(json_encode($menu,1), "keyboard", "w+", 'json');
 
@@ -401,11 +402,13 @@
         }
 
         private function getKeyboardGroup($reply, $action){
-            $menu = [[
-                ['text'=>'Група 1','callback_data'=>'group_1'],
-                ['text'=>'Група 2','callback_data'=>'group_2'],
-                ['text'=>'Група 3','callback_data'=>'group_3']
-            ]];
+            $menu = [
+                        [
+                            ['text'=>'Група 1','callback_data'=>'group_1'],
+                            ['text'=>'Група 2','callback_data'=>'group_2'],
+                            ['text'=>'Група 3','callback_data'=>'group_3']
+                        ]
+                    ];
             
             $reply_markup = $this->telegram->replyKeyboardMarkup(
                 [

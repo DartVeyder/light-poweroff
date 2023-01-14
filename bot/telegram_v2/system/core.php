@@ -1,0 +1,45 @@
+<?php
+    use Telegram\Bot\Api;
+    class Core{
+ 
+     
+	/**
+	 * @return mixed
+	 */
+	public static function getTelegram() {
+        $token = (DEV) ? TOKEN_DEV : TOKEN_PROD;
+    
+        $telegram = new Api($token);
+         
+		return $telegram;
+	}
+
+    public static function cUrl($url = '',$data = [] , $cookie = ''){
+        $url = URL_API . $url;
+        $url .= http_build_query($data);
+            $ch = curl_init();
+            Curl_setopt($ch, CURLOPT_URL, $url);
+            Curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //Retrieve the information obtained by curl_exec() as a file stream instead of directly.
+            Curl_setopt($ch, CURLOPT_HEADER, 0);
+            Curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // Check the source of the certificate
+            Curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // Check if the SSL encryption algorithm exists from the certificate
+            Curl_setopt($ch, CURLOPT_SSLVERSION,  CURL_SSLVERSION_TLSv1);//Set the SSL protocol version number
+            curl_setopt($ch, CURLINFO_HEADER_OUT,true);
+            If($cookie){
+                Curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
+                Curl_setopt ($ch, CURLOPT_REFERER, 'https://wx.qq.com');
+            }
+            Curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94  Safari/537.36');          
+            Curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+            $output = curl_exec($ch); 
+            if ( curl_errno($ch) ) return curl_error($ch);
+            $info = curl_getinfo($ch);
+            Curl_close($ch);
+
+             return json_decode($output, true);
+
+    }
+	 
+ 
+	 
+}
