@@ -4,21 +4,18 @@ class Application {
     
     public function run(){
             $this->Loader();
-            //...
+            
     }
     
     public function Loader(){
         spl_autoload_register(['ClassLoader', 'autoload'], true, false);
 
         try{
-            
-            echo Controller_start::$params; //KSL 
+            $result = Core::getTelegramResult();
 
-           //Пример добавления каталога в автозагрузчик классов
-            //ClassLoader::$dir[] = 'view';
-
-            //Пример добавления класса MyClass к карте классов
-            //ClassLoader::$addMap['MyClass'] = 'folder/MyClass.php';
+            new Message($result);
+            new Callback($result);
+            echo Controller_start::$params; //KSL  
 
         } catch (Exception $e){
             echo '<h2>Внимание! Обнаружена ошибка.</h2>'.

@@ -35,7 +35,6 @@
             } 
  
             $telegram = Core::getTelegram();
-
             return  $telegram->replyKeyboardMarkup($array);
         }
 

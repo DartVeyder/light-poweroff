@@ -1,10 +1,11 @@
 <?php
-    class Controller_start extends Controller
+    class Controller_region extends Controller
     {
         public static $params;
 
+        
        
-        public static function send($result)
+        public static function create($result)
         {
             $array = [];
             $chat_id = $result["message"]["chat"]["id"];

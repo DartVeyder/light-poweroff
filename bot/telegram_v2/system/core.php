@@ -14,6 +14,12 @@
 		return $telegram;
 	}
 
+    public static function getTelegramResult()
+    {
+        $telegram = self::getTelegram();
+        return $telegram->getWebhookUpdates();
+    }
+
     public static function cUrl($url = '',$data = [] , $cookie = ''){
         $url = URL_API . $url;
         $url .= http_build_query($data);

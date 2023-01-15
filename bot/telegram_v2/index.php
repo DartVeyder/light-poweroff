@@ -11,19 +11,8 @@
   
  
     $application = new Application();    
-    $application->run();
-    
-    use Telegram\Bot\Api;
-   
-
-    $token = (DEV) ? TOKEN_DEV : TOKEN_PROD;
-
-    $telegram = new Api($token);
+    $application->run(); 
 
     
 
-    $message = new Message($telegram);
-
-    $array =  Model_region::index();
-    Helper::dd($array);
 ?>

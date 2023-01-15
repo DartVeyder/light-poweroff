@@ -1,20 +1,15 @@
 <?php
     class Message{
-        public $text;
-        private $telegram;
+        public $text; 
         private $result;
         
-        public function __construct($telegram)
-        {
-            $this->setTelegram($telegram);
-
-            $result = $telegram->getWebhookUpdates();
+        public function __construct($result)
+        { 
             $this->setResult($result);
 
             $text = $result["message"]["text"];
             $this->text = $text;
-           
-
+            
             $this->route($this->get_text());
         } 
 
@@ -32,26 +27,8 @@
                 break; 
             }
         }
-    
-	/**
-	 * @param mixed $telegram 
-	 * @return self
-	 */
-	public function setTelegram($telegram): self {
-		$this->telegram = $telegram;
-		return $this;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getTelegram() {
-		return $this->telegram;
-	}
-
-	/**
-	 * @return mixed
-	 */
+     
+	 
 	public function getResult() {
 		return $this->result;
 	}
