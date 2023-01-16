@@ -12,9 +12,14 @@ class Application {
 
         try{
             $result = Core::getTelegramResult();
-
-            new Message($result);
-            new Callback($result);
+            if (isset($result['callback_query'])){
+                    
+            }else{
+                new Message($result);
+            }
+            
+            
+            
             echo Controller_start::$params; //KSL  
 
         } catch (Exception $e){

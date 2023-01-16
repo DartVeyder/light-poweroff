@@ -1,5 +1,6 @@
 <?php
     class Callback{ 
+        
         public function __construct($result)
         {
             if (isset($result['callback_query'])) 
@@ -15,10 +16,11 @@
         {
             switch ($data['name']) {
                 case 'region':
-                     
+                      Controller_group::create();
+                    //View_start::send($result);   
                 break; 
             }
-        }
+        } 
 
         private function callback_data($string){
             $data = explode("_", $string);

@@ -4,7 +4,6 @@
         public static $params;
 
         
-       
         public static function create($result)
         {
             $array = [];

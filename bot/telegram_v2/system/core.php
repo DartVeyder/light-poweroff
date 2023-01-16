@@ -15,7 +15,7 @@
 	}
 
     public static function getTelegramResult()
-    {
+    { 
         $telegram = self::getTelegram();
         return $telegram->getWebhookUpdates();
     }
@@ -42,10 +42,7 @@
             $info = curl_getinfo($ch);
             Curl_close($ch);
 
-             return json_decode($output, true);
+            return json_decode($output, true);
 
-    }
-	 
- 
-	 
+    } 
 }
