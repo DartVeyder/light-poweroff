@@ -8,7 +8,7 @@
 	 */
 	public static function getTelegram() {
         $token = (DEV) ? TOKEN_DEV : TOKEN_PROD;
-    
+        
         $telegram = new Api($token);
          
 		return $telegram;
@@ -16,8 +16,37 @@
 
     public static function getTelegramResult()
     { 
+        $array = [];
         $telegram = self::getTelegram();
-        return $telegram->getWebhookUpdates();
+        $result = $telegram->getWebhookUpdates();
+        
+        if (isset($result['callback_query'])) {
+            $array['action'] = "callback";
+            $message_id =   $result["callback_query"]["message"]["message_id"];;
+          
+            $text = $result['callback_query']['data'];
+            $result = $result['callback_query']['from'];
+           
+        }else{
+            $array['action'] = "message";
+            $text = $result['message']['text'];
+
+            $result =  $result["message"]["from"];
+           
+        }
+        $array['data'] = [
+            "user_id" => $result["id"],
+            "chat_id" => $result["id"],
+            "first_name" => $result["first_name"],
+            "last_name" => $result["last_name"],
+            "username" => $result["username"],
+            "language_code" => $result["language_code"],
+            "text" => $text
+        ];
+        if($message_id){
+            $array['data']['message_id'] = $message_id;
+        }  
+        return $array;
     }
 
     public static function cUrl($url = '',$data = [] , $cookie = ''){

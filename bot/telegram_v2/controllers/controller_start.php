@@ -4,24 +4,20 @@
         public static $params;
 
        
-        public static function send($result)
+        public static function index($data)
         {
             $array = [];
-            $chat_id = $result["message"]["chat"]["id"];
-            $data = [
-                "first_name" => $result["message"]["from"]["first_name"],
-            ];
-            
-            $text = Language::get_message_text($data)['start'];
+              
+            $text = Language::get_message_text($data,'start');
 
             $array['data'] = Model_region::index();
 
             $array['message'] = [
                 'text' =>   $text,
-                'chat_id' => $chat_id
+                'chat_id' =>  $data['chat_id']
             ];
-
-            return $array;
+            View_start::index($array); 
+            
         }
 
     }

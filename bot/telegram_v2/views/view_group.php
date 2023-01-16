@@ -1,10 +1,10 @@
 <?php
 
 class View_group{
-    public static function send($result){
-        $message = $result['message'];
-        $message['reply_markup'] = Keyboard::reply_markup([2], [], 'group', $result['data'], [], "inline_keyboard");
+    public static function index($array){
+        $message = $array['message'];
+        $message['reply_markup'] = Keyboard::reply_markup([3], [], 'group', $array['data'], [], "inline_keyboard");
         
-        Core::getTelegram()->sendMessage($message);
+        Core::getTelegram()->editMessageText($message);
     }
 }

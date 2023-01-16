@@ -1,28 +1,18 @@
 <?php
     class Callback{ 
         
-        public function __construct($result)
+        
+        public static function route($result)
         {
-            if (isset($result['callback_query'])) 
-            {
-                $callback = $result['callback_query'];
- 
-                $data = $this->callback_data($callback['data']);
-
-                $this->route($data);
-            }   
-        }
-        private function route($data)
-        {
-            switch ($data['name']) {
+            $callback_data = self::callback_data($result['data']['text']);
+            switch ($callback_data['name']) {
                 case 'region':
-                      Controller_group::create();
-                    //View_start::send($result);   
+                      Controller_group::index($result['data']);
                 break; 
             }
         } 
 
-        private function callback_data($string){
+        private  static function callback_data($string){
             $data = explode("_", $string);
             return [
                 "name" => $data[0],

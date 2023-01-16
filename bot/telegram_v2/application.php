@@ -12,10 +12,13 @@ class Application {
 
         try{
             $result = Core::getTelegramResult();
-            if (isset($result['callback_query'])){
-                    
+
+           
+            
+            if ($result['action'] == 'callback'){
+                Callback::route($result);
             }else{
-                new Message($result);
+                 Message::route($result);
             }
             
             

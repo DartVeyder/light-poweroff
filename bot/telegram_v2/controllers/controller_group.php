@@ -4,30 +4,24 @@
         public static $params;
 
         
-        public static function create()
+        public static function index($data)
         {
-            self::init();
-            Core::getTelegram()->sendMessage(
-                    [
-                        'chat_id'       => 691027924,    
-                        'text'          =>  "id" , 
-                        'parse_mode'    => 'html',
-                    ]
-                );  
-            /*
+ 
             $array = [];
-            $chat_id = self::getChat_id();
             
-            $text = Language::get_message_text()['title_create_group'];
+            $text = Language::get_message_text($data, "title_create_group");
 
             $array['data'] = Model_group::index();
 
             $array['message'] = [
                 'text' =>   $text,
-                'chat_id' => $chat_id
+                'message_id' => $data['message_id'],
+                'chat_id' => $data['chat_id']
             ];
 
-            return $array;*/
+           
+
+            View_group::index($array);
         }
 
     }
