@@ -6,12 +6,9 @@ class View_group
     {
         $message = $array['message'];
 
-        $message['reply_markup'] = Keyboard::reply_markup([3], [], 'group', $array['data'], $array['buttons'], "inline_keyboard");
+        $message['reply_markup'] = Keyboard::reply_markup([3], [], $array['data'], $array['buttons'], "inline_keyboard");
         
         Core::getTelegram()->editMessageText($message);
     }
-
-    public static function notAvailable(){
-        
-    }
+ 
 }

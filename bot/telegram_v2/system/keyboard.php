@@ -2,15 +2,13 @@
     class Keyboard{
         private static $col;
         private static $row;
-        private static $callback_prefix;
-        private static $array;
+        private static $buttons;
 
 
-        public static function reply_markup($col = [], $row = [], $callback_prefix = '', $array, $merge = [], $type_keyboard){
+        public static function reply_markup($col = [], $row = [], $buttons, $merge = [], $type_keyboard){
             self::$col = $col;
-            self::$row = $row;
-            self::$callback_prefix = $callback_prefix;
-            self::$array = $array;
+            self::$row = $row; 
+            self::$buttons = $buttons;
   
             $get_array_buttons = self::get_array_buttons($type_keyboard);
 
@@ -46,11 +44,8 @@
 
             } else {
                 if (empty(self::$row) && count(self::$col) == 1) {
-                    foreach (self::$array as $key => $item) {
-                        $row[] = ['text' => $item['name'], 'callback_data' => self::$callback_prefix . '_' . $item['id']];
-                    }
-
-                    $data = array_chunk($row, self::$col[0]);
+                    
+                    $data = array_chunk(self::$buttons, self::$col[0]);
                 } else {
                     $data = [[['text' => 'Помилка', 'callback_data' => 'error']]];
                 }

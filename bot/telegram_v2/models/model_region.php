@@ -8,8 +8,8 @@
             foreach ($data['records'] as $item)
             {
                 $menu[] = [
-                    'name' => $item['region_name'],
-                    'id' => $item['region_id']
+                    'text' => $item['region_name'],
+                    'callback_data' => "region_".$item['region_id']
                 ];
             }
 
