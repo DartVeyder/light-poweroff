@@ -1,10 +1,12 @@
+use Exception;
     <?php
     class ClassLoader{ 
         public static $dir = [
             'system',
             'controllers',
             'models',
-            'views'
+            'views',
+            'services'
         ];
     
         public static function autoload($className){

@@ -1,28 +1,22 @@
 <?php
-    class Controller_region extends Controller
+class Controller_region extends Controller
+{
+    public static $params;
+
+
+    public static function index($data)
     {
-        public static $params;
+        $array = [];
 
-        
-        public static function create($result)
-        {
-            $array = [];
-            $chat_id = $result["message"]["chat"]["id"];
-            $data = [
-                "first_name" => $result["message"]["from"]["first_name"],
-            ];
-            
-            $text = Language::get_message_text($data)['start'];
+        $language = Language::get_message_text($data);
 
-            $array['data'] = Model_region::index();
+        $array['data'] = Model_region::index();
 
-            $array['message'] = [
-                'text' =>   $text,
-                'chat_id' => $chat_id
-            ];
-
-            return $array;
-        }
-
+        $array['message'] = [
+            'text' =>   $language['start'],
+            'message_id' => $data['message_id'],
+            'chat_id' =>  $data['chat_id']
+        ];
+        View_region::index($array);
     }
-    
+}
