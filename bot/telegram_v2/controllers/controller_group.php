@@ -10,7 +10,7 @@ class Controller_group extends Controller
 
         $language = Language::get_message_text($data);
         
-        $array['data'] = Model_group::index();
+        $array['data'] = Model_group::index(['region_id' => $data['callback_data']['id']]);
 
         $array['message'] = [
             'text' =>    $language['title_create_group'],

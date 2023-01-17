@@ -1,8 +1,10 @@
 <?php
     class Model_group
     {
-        public static function index()
+        public static function index($data)
         {
+            $region = Core::cUrl("/regions/readOne.php?", $data);
+            Helper::send($region);
             $data = [
                 [
                     "group_id" => 1,
@@ -26,6 +28,9 @@
                 ];
             }
             return $menu; 
+        }
+        public static function notAvailable1($data){
+            Core::cUrl("/regions/readOne.php?", $data);   
         }
  
     }

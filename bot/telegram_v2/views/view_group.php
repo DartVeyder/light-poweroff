@@ -10,4 +10,8 @@ class View_group
         
         Core::getTelegram()->editMessageText($message);
     }
+
+    public static function notAvailable(){
+        
+    }
 }
