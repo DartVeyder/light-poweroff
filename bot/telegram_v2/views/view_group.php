@@ -2,13 +2,20 @@
 
 class View_group
 {
-    public static function index($array)
+    public static function index($result, $array)
     {
-        $message = $array['message'];
-
-        $message['reply_markup'] = Keyboard::reply_markup([3], [], $array['data'], $array['buttons'], "inline_keyboard");
+        extract($array); 
+        $reply_markup = Keyboard::reply_markup([3], [], $buttons_group, $button_back , "inline_keyboard");
+           
         
-        Core::getTelegram()->editMessageText($message);
+           $data = [
+            'text' =>  $text,
+            'message_id' => $result['message_id'],
+            'chat_id' => $result['chat_id'],
+            'reply_markup' => $reply_markup
+        ];
+         
+        Core::getTelegram()->editMessageText($data);
     }
  
 }

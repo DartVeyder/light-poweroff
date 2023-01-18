@@ -16,9 +16,9 @@
                     Controller_region::index($result['data']);
                 break;
                 case 'region':
-                    Controller_group::index($result['data']);
+                    Controller_group::index($result['data'], $result['data']['callback_data']['id']);
                 break; 
-                case 'back':    
+                case 'back':     
                     Controller_back::index($result);
                 break; 
                 case 'group':

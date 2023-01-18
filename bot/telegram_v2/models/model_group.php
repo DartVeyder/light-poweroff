@@ -1,22 +1,35 @@
 <?php
     class Model_group
     {
-        public static function index($array)
+        public static function index($id)
         {
             $data  = [];
-            $region = Core::cUrl("/regions/readOne.php?", $array);
+            $text = Service_text::get_message_text();
+            $region = Core::cUrl("/regions/readOne.php?", ['region_id' => $id]);
+
             if($region['active']){
                 for ($i = 1; $i <= $region['number_groups'] ; $i++) { 
                     $buttons_group[] = [
                         'text' => "Група $i",
                         'callback_data' => "group_$i"
                     ];
-                } 
-                $data['language'] = "title_create_group";
+                }   
+
+             
+                $button_back = Service_buttons::back($text['button_back_text'], 'back_start');
+                
+ 
+                $data = [
+                    'text' =>  $text['title_create_group'],
+                    'buttons_group' => $buttons_group,
+                    'button_back' =>$button_back
+                 ]; 
+                
+               
             }else{
 
-            }
-            $data['buttons_group'] = $buttons_group;
+            } 
+            
             return $data; 
         } 
  
