@@ -4,18 +4,10 @@ class Controller_start extends Controller
     public static $params;
 
 
-    public static function index($data)
+    public static function index($array)
     {
-        $array = [];
+        $region = Model_region::index($array);
 
-        $language = Language::get_message_text($data);
-
-        $array['data'] = Model_region::index();
-
-        $array['message'] = [
-            'text' =>   $language['start'],
-            'chat_id' =>  $data['chat_id']
-        ];
-        View_start::index($array);
+        View_start::index($array, $region);
     }
 }

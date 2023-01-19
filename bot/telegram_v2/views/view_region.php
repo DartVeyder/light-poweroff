@@ -1,10 +1,11 @@
 <?php
 
-class View_region{
-    public static function index($array){
-        $message = $array['message'];
-        $message['reply_markup'] = Keyboard::reply_markup([2], [], $array['data'], [], "inline_keyboard");
-        
+class View_region extends View{
+    public static function index($result, $array){
+
+        extract($array); 
+        $reply_markup = Keyboard::reply_markup([2], [], $buttons, $button_merge, "inline_keyboard");
+        $message      = self::get_message($text, $result['message_id'], $result['chat_id'], $reply_markup);
         Core::getTelegram()->editMessageText($message);
     }
 }

@@ -1,12 +1,16 @@
 use Exception;
     <?php
+
+use function PHPSTORM_META\map;
+
     class ClassLoader{ 
         public static $dir = [
             'system',
             'controllers',
             'models',
             'views',
-            'services'
+            'services',
+            'services/buttons'
         ];
     
         public static function autoload($className){

@@ -1,18 +1,13 @@
 <?php
-class Model_region
+class Model_region extends Model
 {
-    public static function index()
+    public static function index($data)
     {
-        $data = Core::get("/regions/read.php");
-
-        $menu = [];
-        foreach ($data['records'] as $item) {
-            $menu[] = [
-                'text' => $item['region_name'],
-                'callback_data' => "region_" . $item['region_id']
-            ];
-        }
-
-        return  $menu;
+        $lang_text   = Service_text::get_message_text($data);
+        $regions = Core::get("/regions/read.php");
+        $buttons_region = Button_region::list($regions['records']);
+        $text    = $lang_text['start'];
+        
+        return   self::message($text, $buttons_region);
     }
 }
