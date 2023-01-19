@@ -49,7 +49,7 @@
         return $array;
     }
 
-    public static function cUrl($url = '',$data = [] , $cookie = ''){
+    public static function get($url = '',$data = [] , $cookie = ''){
         $url = URL_API . $url;
         $url .= http_build_query($data);
             $ch = curl_init();
