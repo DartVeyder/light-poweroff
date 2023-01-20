@@ -18,7 +18,8 @@
                 "button_facebook" => "Фейсбук",
                 "button_setting" => "Налаштування",
                 "button_donate" => "Донат",
-                "button_developer" => "Розробник"
+                "button_developer" => "Розробник",
+                "button_shutdown_shedule" => "Графік відключень"
             ];
             return  $array;
         } 

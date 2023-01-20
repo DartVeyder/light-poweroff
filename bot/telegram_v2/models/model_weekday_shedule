@@ -1,0 +1,6 @@
+<?php
+    class Model_weekday_shedule{
+        public static function indxe(){
+
+        }
+    }

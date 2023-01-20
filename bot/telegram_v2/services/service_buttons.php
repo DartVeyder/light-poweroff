@@ -17,4 +17,9 @@ Class Service_buttons{
         }
         return array_chunk($buttons, 2);
     }
+
+    public static function shedule_shutdown($lang_text){
+        
+        return [[['text'=>$lang_text, "callback_data" => "shedule"]]];
+    }
 }

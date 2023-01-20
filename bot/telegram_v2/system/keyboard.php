@@ -40,7 +40,7 @@
         private static function get_array_buttons($type_keyboard)
         {
             if($type_keyboard == "keyboard"){
-                $data = [['button']];
+                $data = self::$buttons;
 
             } else {
                 if (empty(self::$row) && count(self::$col) == 1) {
