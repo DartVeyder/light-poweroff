@@ -8,6 +8,20 @@
                 "region_id"   => $user['region_id'], 
                 "weekday_id"  => $weekday_id
             ]);
-            Helper::send($shutdowm_shedule);
+            $weekdays = Core::get("/weekday/read.php");
+
+            $title_text = "------Графік відключення------ \n";
+            $title_text .= "Сьогодні: " . $shutdowm_shedule['records'][0]['weekday_name'] . "\n";
+            $title_text .= "Ваша група: $user[group_id] \n\n";
+
+            $lang_text   = Service_text::get_message_text($result_telegram);
+            $buttons_weekdays = Button_shedule::weekdays($weekdays['records'], $weekday_id); 
+            
+            $data = [
+                'shutdowm_shedule' => $shutdowm_shedule['records'],
+                'title_text'       => $title_text,
+                'buttons'         => $buttons_weekdays, 
+            ]; 
+            return $data;
         }
     }

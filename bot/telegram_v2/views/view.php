@@ -5,7 +5,8 @@
             'text'         => $text,
             'message_id'   => $message_id,
             'chat_id'      => $chat_id,
-            'reply_markup' => $reply_markup
+            'reply_markup' => $reply_markup,
+            'parse_mode'    => 'html',
         ];
         }
     }

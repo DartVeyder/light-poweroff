@@ -5,7 +5,7 @@
         public static function route($result, $type = '')
         {
             $route_text = self::route_text($result['data']['text'], $type);
-            
+            //Helper::send($route_text, false);
             switch ($route_text['action']) {
                 case 'start':
                     Controller_region::index($result['data']);
@@ -13,11 +13,14 @@
                 case 'region': 
                     Controller_group::index($result['data'], $route_text['id']);
                 break; 
-                case 'back':   
+                case 'back':    
                     Controller_back::index($result);
                 break; 
-                case 'group':
+                case 'group': 
                     Controller_shedule::index($result, $route_text['id']);
+                break;
+                case 'weekday':
+                    Controller_weekday_shedule::index($result, $route_text['id']);
                 break;
             }
         } 

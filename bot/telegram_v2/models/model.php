@@ -4,7 +4,8 @@
         return [
             'text'         => $text,
             'buttons'      => (array) $buttons,
-            'button_merge' => $button_merge
+            'button_merge' => $button_merge,
+           
         ];
         } 
     }
