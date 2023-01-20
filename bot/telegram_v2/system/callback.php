@@ -17,11 +17,11 @@
                     Controller_back::index($result);
                 break; 
                 case 'group': 
-                    Controller_shedule::index($result, $route_text['id']);
+                    Controller_shedule::index($result['data'], $route_text['id'], date("N"));
                 break;
-                case 'weekday':
-                    Controller_weekday_shedule::index($result, $route_text['id']);
-                break;
+                case 'weekday': 
+                    Controller_weekday_shedule::index($result, $route_text['id'] );
+                break; 
             }
         } 
 
