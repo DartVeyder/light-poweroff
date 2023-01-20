@@ -20,7 +20,7 @@
                     Controller_shedule::index($result['data'], $route_text['id'], date("N"));
                 break;
                 case 'weekday': 
-                    Controller_weekday_shedule::index($result, $route_text['id'] );
+                    Controller_weekday_shedule::index($result['data'], $route_text['id'] );
                 break; 
             }
         } 

@@ -16,6 +16,7 @@
             $reply_markup = Keyboard::reply_markup([4], [], $buttons, $button_merge, "inline_keyboard");
             $message      = self::get_message($text, $result_telegram['message_id'], $result_telegram['chat_id'], $reply_markup);
             
+            
             Core::getTelegram()->editMessageText($message); 
         }
     }

@@ -8,10 +8,13 @@ Class Service_buttons{
         return [[['text'=>$text,'callback_data'=> $callback_data]]];
     }
 
-    public static function region_none_active($text, $callback_data ){
-        return [[
-            ['text'=>$text,'url'=> $callback_data],
-            ['text'=>$text,'url'=> $callback_data],
-            ]];
+    public static function controls($lang_text){
+        $list = ["setting", "donate", "developer"];
+        foreach ($list as $item) {
+            $buttons[] = [
+                'text'=>$lang_text["button_$item"],'callback_data'=> $item
+            ];
+        }
+        return array_chunk($buttons, 2);
     }
 }
