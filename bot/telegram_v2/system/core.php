@@ -51,7 +51,7 @@
 
     public static function get($url = '',$data = [] , $cookie = ''){
         $url = URL_API . $url;
-        $url .= http_build_query($data);
+        $url .= "?".http_build_query($data);
             $ch = curl_init();
             Curl_setopt($ch, CURLOPT_URL, $url);
             Curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //Retrieve the information obtained by curl_exec() as a file stream instead of directly.

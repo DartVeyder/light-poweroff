@@ -9,16 +9,15 @@
             switch ($route_text['action']) {
                 case 'start':
                     Controller_region::index($result['data']);
-                break;
+                break; 
                 case 'region': 
                     Controller_group::index($result['data'], $route_text['id']);
                 break; 
                 case 'back':   
-                    
                     Controller_back::index($result);
                 break; 
                 case 'group':
-                    
+                    Controller_shedule::index($result, $route_text['id']);
                 break;
             }
         } 
