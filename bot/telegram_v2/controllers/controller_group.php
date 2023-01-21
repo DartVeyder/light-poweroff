@@ -12,16 +12,16 @@ class Controller_group extends Controller
 
     public static function edit($result_telegram, $action){
        $group =  Model_group::edit($result_telegram);
-       $group['action'] = $action;
+       $group['action'] = $action;  
        
        View_group::edit($result_telegram,  $group);
 
     }
 
     public static function update($result_telegram, $group_id, $action){
-        $setting = Model_setting::index($result_telegram);
-        $setting['action'] = $action;   
-        View_setting::index($result_telegram, $setting);
+        $group =  Model_group::edit($result_telegram, $group_id);
+        $group['action'] = $action;   
+        View_group::edit($result_telegram,  $group);
  
      }
 }

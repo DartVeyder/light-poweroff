@@ -16,9 +16,9 @@ class Controller_region extends Controller
     }
 
     public static function update($result_telegram, $region_id, $action){
-        $setting = Model_setting::index($result_telegram);
-        $setting['action'] = $action;   
-        View_setting::index($result_telegram, $setting);
+        $region = Model_region::edit($result_telegram, $region_id);
+        $region['action'] = $action;
+        View_region::index($result_telegram, $region);
     }
 
 }

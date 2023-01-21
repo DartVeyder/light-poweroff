@@ -25,12 +25,13 @@ class Model_group extends Model
         return self::message($text, $buttons_group, $button_back);
     }
 
-    public static function edit($result_telegram){
+    public static function edit($result_telegram, $group_id = ''){
         $user        = Core::get("/user/readOne.php", ['user_telegram_id' => $result_telegram['user_id']]);
         $region      = Core::get("/regions/readOne.php", ['region_id' => $user['region_id']]);
         $lang_text   = Service_text::get_message_text();
+        $group_id     = ($group_id) ? $group_id : $user['group_id'];
         $button_back = Service_buttons::back($lang_text['button_back_text'], 'back_setting');
-        $buttons_group = Button_group::list($region['number_groups'], $lang_text, 'update');
+        $buttons_group = Button_group::list($region['number_groups'], $lang_text, 'update', $group_id );
         $text          = $lang_text['text_title_edit_group'];
         return self::message($text, $buttons_group, $button_back);
     } 

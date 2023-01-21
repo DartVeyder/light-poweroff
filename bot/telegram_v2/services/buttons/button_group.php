@@ -1,10 +1,11 @@
 <?php
     class Button_group{
-        public static function list($number_groups, $lang_text, $prefix = ""){
+        public static function list($number_groups, $lang_text, $prefix = "", $group_id = ''){
         $prefix = ($prefix) ? $prefix . "-" : "";
             for ($i = 1; $i <= $number_groups; $i++) {
+                $group_status = ($group_id == $i)?  "✅": "  ";
                 $buttons[] = [
-                    'text' => "$lang_text[button_group_text] $i",
+                    'text' => "$lang_text[button_group_text] $i $group_status",
                     'callback_data' => $prefix ."group_$i"
                 ];
             } 
