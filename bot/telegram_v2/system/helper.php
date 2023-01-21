@@ -8,14 +8,17 @@ class Helper
         exit;
     }
 
-    public static function send($text, $exit = true)
+    public static function send($data, $exit = true)
     {
-        if (!$text) {
-            $text = "Помилка!!! Пусте поле";
+        if (!$data) {
+            $data = "Помилка!!! Пусте поле";
         }
 
-        if (is_array($text)) {
-            $text = "<pre>" . json_encode($text, JSON_UNESCAPED_UNICODE) . '</pre>';
+    
+        if (is_array($data)) {
+            $text = "<pre>" . json_encode($data, JSON_UNESCAPED_UNICODE) . "</pre>";
+        }else{
+            $text = $data;
         }
         $array = [
             "chat_id" => 691027924,

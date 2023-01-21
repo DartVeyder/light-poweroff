@@ -19,7 +19,14 @@
                 "button_setting" => "Налаштування",
                 "button_donate" => "Донат",
                 "button_developer" => "Розробник",
-                "button_shutdown_shedule" => "Графік відключень"
+                "button_shutdown_shedule" => "Графік відключень",
+                "button_edit_notification" => "Сповіщення",
+                "button_edit_region" => "Змінити область",
+                "button_edit_group" => "Змінити групу",
+                "setting_title_text" => "<b>Група:</b> $group_id\n <b>Область:</b> $region_name\n ",
+                "setting_title_text_notification" => "<b>Сповіщення: </b>",
+                "setting_title_text_nottification_on" => "Включено ✅",
+                "setting_title_text_nottification_off" => "Виключено ❌",
             ];
             return  $array;
         } 
