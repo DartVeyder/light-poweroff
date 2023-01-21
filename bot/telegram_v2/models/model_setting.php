@@ -10,19 +10,13 @@ class Model_setting extends Model
 
         $buttons = [
             "notification" => $lang_text['button_edit_notification'],
-            "editGroup" => $lang_text['button_edit_region'],
-            "editRegion" => $lang_text['button_edit_group'],
-        ]; 
+            "editGroup" => $lang_text['button_edit_group'],
+            "editRegion" => $lang_text['button_edit_region'],
+        ];  
         $text = $lang_text['setting_title_text'];
         $text .= $lang_text['setting_title_text_notification'] . $notification;
         $buttons_setting =  button_setting::list($buttons);
-       
-        $data =     [
-            'text'         => $text,
-            'buttons'      => $buttons_setting,
-            'button_merge' => $button_back,
-           
-        ];
-        return $data;
+        
+         return self::message($text, $buttons_setting, $button_back);;
     }
 }

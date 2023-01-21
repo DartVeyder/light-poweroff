@@ -12,7 +12,7 @@
                 "text_title_today" => 'Сьогодні:',
                 "text_title_checked" => 'Вибрано:',
                 "text_title_your_group" => 'Ваша група:',
-                "button_back_text" => "Назад",
+                "button_back_text" => "<< Назад",
                 "button_group_text" => "Група",
                 "button_oficial_site" => "Оф. сайт",
                 "button_facebook" => "Фейсбук",
@@ -27,6 +27,7 @@
                 "setting_title_text_notification" => "<b>Сповіщення: </b>",
                 "setting_title_text_nottification_on" => "Включено ✅",
                 "setting_title_text_nottification_off" => "Виключено ❌",
+                "text_title_edit_group" => "<b>====== ЗМІНИТИ ГРУПУ ======</b>\n Виберіть групу"
             ];
             return  $array;
         } 

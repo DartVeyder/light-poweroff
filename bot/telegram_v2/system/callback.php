@@ -6,7 +6,7 @@
         {
             $route_text = self::route_text($result['data']['text'], $type);
             $result['data']['route'] = $route_text;
-            $result_telegram = $result['data'];
+            $result_telegram = $result['data']; 
             switch ($route_text['action']) {
                 case 'start':
                     Controller_region::index($result_telegram , 'edit');
@@ -26,12 +26,19 @@
                 case 'setting':
                     Controller_setting::index($result_telegram, 'edit');
                 break;
+                case 'editGroup':
+                    Controller_group::edit($result_telegram, 'edit');
+                break;
+                case 'update-group':
+                    
+                    Controller_group::update($result_telegram,  $route_text['id'], 'edit');
+                break;
                 case 'donate':
                     
                 break;
                 case 'developer':
                     
-                break;
+                break; 
             }
         } 
 
