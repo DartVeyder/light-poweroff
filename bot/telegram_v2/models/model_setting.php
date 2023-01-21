@@ -9,7 +9,7 @@ class Model_setting extends Model
         $button_back = Service_buttons::back($lang_text['button_back_text'], 'back_weekday');
 
         $buttons = [
-            "notification" => $lang_text['button_edit_notification'],
+            "editNotification" => $lang_text['button_edit_notification'],
             "editGroup" => $lang_text['button_edit_group'],
             "editRegion" => $lang_text['button_edit_region'],
         ];  

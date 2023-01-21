@@ -7,6 +7,7 @@
             $route_text = self::route_text($result['data']['text'], $type);
             $result['data']['route'] = $route_text;
             $result_telegram = $result['data']; 
+           //Helper::send(($route_text));
             switch ($route_text['action']) {
                 case 'start':
                     Controller_region::index($result_telegram , 'edit');
@@ -37,6 +38,12 @@
                 break;
                 case 'update-region':
                     Controller_group::update($result_telegram,  $route_text['id'], 'edit');
+                break;
+                case 'editNotification': 
+                    Controller_notification::edit($result_telegram, 'edit');
+                break;
+                case 'update-notification':
+                    Controller_notification::update($result_telegram,  $route_text['id'], 'edit');
                 break;
                 case 'donate':
                     

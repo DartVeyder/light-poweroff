@@ -19,7 +19,7 @@ class Helper
         }
 
 
-        if (!$data) {
+        if ($data == '') {
             $text = "Помилка!!! Пусте поле";
         }
 

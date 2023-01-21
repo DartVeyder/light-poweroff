@@ -28,7 +28,11 @@
                 "setting_title_text_nottification_on" => "Включено ✅",
                 "setting_title_text_nottification_off" => "Виключено ❌",
                 "text_title_edit_group" => "<b>====== ЗМІНИТИ ГРУПУ ======</b>\n Виберіть групу",
-                "text_title_edit_region" => "<b>====== ЗМІНИТИ ОБЛАСТЬ ======</b>\n Виберіть область"
+                "text_title_edit_region" => "<b>====== ЗМІНИТИ ОБЛАСТЬ ======</b>\n Виберіть область",
+                "text_title_edit_notification" => "<b>====== ЗМІНИТИ СПОВІЩЕННЯ ======</b>\n ✅ - стан сповіщення",
+                "button_notification_off" => "Виключити",
+                "button_notification_on" => "Включити",
+                "button_notiification_next_shutdown" => "Наступне відключення"
             ];
             return  $array;
         } 
