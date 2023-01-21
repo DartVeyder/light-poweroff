@@ -1,10 +1,12 @@
 <?php
     class Button_region{
-        public static function list($data){
-            foreach ($data as $item) {
+        public static function list($regions, $region_id = "", $prefix = ""){
+            $prefix = ($prefix) ? $prefix . "-" : "";
+            foreach ($regions as $region) {
+            $check     = ($region_id == $region['region_id']) ? "✅" : "";
                 $buttons[] = [
-                    'text' => $item['region_name'],
-                    'callback_data' => "region_" . $item['region_id']
+                    'text' => $region['region_name'] ." ".  $check,
+                    'callback_data' => $prefix . "region_" . $region['region_id']
                 ];
             }
             return $buttons;

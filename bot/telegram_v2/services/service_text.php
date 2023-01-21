@@ -27,7 +27,8 @@
                 "setting_title_text_notification" => "<b>Сповіщення: </b>",
                 "setting_title_text_nottification_on" => "Включено ✅",
                 "setting_title_text_nottification_off" => "Виключено ❌",
-                "text_title_edit_group" => "<b>====== ЗМІНИТИ ГРУПУ ======</b>\n Виберіть групу"
+                "text_title_edit_group" => "<b>====== ЗМІНИТИ ГРУПУ ======</b>\n Виберіть групу",
+                "text_title_edit_region" => "<b>====== ЗМІНИТИ ОБЛАСТЬ ======</b>\n Виберіть область"
             ];
             return  $array;
         } 

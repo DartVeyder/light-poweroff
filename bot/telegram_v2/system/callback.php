@@ -30,7 +30,12 @@
                     Controller_group::edit($result_telegram, 'edit');
                 break;
                 case 'update-group':
-                    
+                    Controller_group::update($result_telegram,  $route_text['id'], 'edit');
+                break;
+                case 'editRegion':
+                    Controller_region::edit($result_telegram, 'edit');
+                break;
+                case 'update-region':
                     Controller_group::update($result_telegram,  $route_text['id'], 'edit');
                 break;
                 case 'donate':
