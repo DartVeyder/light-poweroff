@@ -45,7 +45,7 @@
                     Controller_notification::update($result_telegram,  $route_text['id'], 'edit');
                 break;
                 case 'donate':
-                    
+                    Controller_donate::index($result_telegram, 'edit');
                 break;
                 case 'developer':
                     Controller_developer::index($result_telegram, 'edit');
