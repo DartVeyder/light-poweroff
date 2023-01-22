@@ -48,7 +48,7 @@
                     
                 break;
                 case 'developer':
-                    
+                    Controller_developer::index($result_telegram, 'edit');
                 break; 
             }
         } 

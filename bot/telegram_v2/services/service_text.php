@@ -32,7 +32,9 @@
                 "text_title_edit_notification" => "<b>====== ЗМІНИТИ СПОВІЩЕННЯ ======</b>\n ✅ - стан сповіщення",
                 "button_notification_off" => "Виключити",
                 "button_notification_on" => "Включити",
-                "button_notiification_next_shutdown" => "Наступне відключення"
+                "button_notiification_next_shutdown" => "Наступне відключення",
+                "text_developer" => "Розробив цього бота Дімон. По всіх питаннях, пропозиціях і скаргах звертайтеся сюди @dart_dim",
+                "text_donate" => "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат \nhttps://send.monobank.ua/jar/3F5wzmExTi"
             ];
             return  $array;
         } 
