@@ -5,6 +5,19 @@ class Model_region extends Model
     {
         $lang_text   = Service_text::get_message_text($result_telegram);
         $regions = Core::get("/regions/read.php");
+        extract($result_telegram);
+        $data = [
+                "username" => $username ,
+                "active" => 1,
+                "user_telegram_id" => $user_id,
+                "first_name" => $first_name,
+                "last_name" =>  $last_name,
+                "language_code" => $language_nmae,
+                "telegram_chat_id" =>  $chat_id,
+        ];
+        
+        $user = Core::get("/user/create.php", $data);
+        Helper::send($user,false);
         $buttons_region = Button_region::list($regions['records']);
         $text    = $lang_text['start'];
         
