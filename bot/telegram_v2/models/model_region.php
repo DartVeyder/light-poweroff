@@ -16,8 +16,8 @@ class Model_region extends Model
                 "telegram_chat_id" =>  $chat_id,
         ];
         
-        $user = Core::get("/user/create.php", $data);
-        Helper::send($user,false);
+        Core::get("/user/create.php", $data);
+        
         $buttons_region = Button_region::list($regions['records']);
         $text    = $lang_text['start'];
         

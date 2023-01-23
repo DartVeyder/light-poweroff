@@ -3,7 +3,7 @@
         public static function index($result_telegram, $weekday_id = '', $action){
             $weekday_id = (!$weekday_id)? date("N") : $weekday_id ;
             $shedule =  Model_weekday_shedule::index($result_telegram, $weekday_id);
-            $shedule['action'] = $action;
+            $shedule['action'] = $action; 
             View_shedule::index($result_telegram, $shedule);
         }
     }

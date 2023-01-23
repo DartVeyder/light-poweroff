@@ -8,8 +8,8 @@
 
         public static function update($result_telegram, $notification_id, $action){
             $notification = Model_notification::edit($result_telegram,$notification_id);
-    
             $notification['action'] = $action;  
+            Core::get("/user/update.php", ["user_telegram_id" => $result_telegram['user_id'], 'notification' => $notification_id]);
             View_notification::edit($result_telegram, $notification);
         }
     }

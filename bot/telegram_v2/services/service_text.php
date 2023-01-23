@@ -23,7 +23,8 @@
                 "button_edit_notification" => "Сповіщення",
                 "button_edit_region" => "Змінити область",
                 "button_edit_group" => "Змінити групу",
-                "setting_title_text" => "<b>Група:</b> $group_id\n <b>Область:</b> $region_name\n ",
+                "setting_title_text" => "<b>Група:</b> $group_id\n<b>Область:</b> $region_name\n",
+                "text_title_shedule_region" => "<b>Область:</b> $region_name\n \n",
                 "setting_title_text_notification" => "<b>Сповіщення: </b>",
                 "setting_title_text_nottification_on" => "Включено ✅",
                 "setting_title_text_nottification_off" => "Виключено ❌",
@@ -34,7 +35,8 @@
                 "button_notification_on" => "Включити",
                 "button_notiification_next_shutdown" => "Наступне відключення",
                 "text_developer" => "Розробив цього бота Дімон. По всіх питаннях, пропозиціях і скаргах звертайтеся сюди @dart_dim",
-                "text_donate" => "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат \nhttps://send.monobank.ua/jar/3F5wzmExTi"
+                "text_donate" => "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат \nhttps://send.monobank.ua/jar/3F5wzmExTi",
+                "text_title_none_group" => "На даний момент групи відсутні по даній області, виберіть іншу область"
             ];
             return  $array;
         } 

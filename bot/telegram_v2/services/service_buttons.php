@@ -8,8 +8,7 @@ Class Service_buttons{
         return [[['text'=>$text,'callback_data'=> $callback_data]]];
     }
 
-    public static function controls($lang_text){
-        $list = ["setting", "donate", "developer"];
+    public static function controls($lang_text, $list){ 
         foreach ($list as $item) {
             $buttons[] = [
                 'text'=>$lang_text["button_$item"],'callback_data'=> $item
