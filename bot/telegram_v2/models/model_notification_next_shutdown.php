@@ -7,7 +7,7 @@ class Model_notification_next_shutdown extends Model
         $info  = [];
         $next  = [];
         $alert_hours = [];
-        $hour = date('20:30');
+        $hour = date('H:i');
         $regions = Core::get("/regions/read.php");
 
         foreach ($regions['records'] as $region) {
