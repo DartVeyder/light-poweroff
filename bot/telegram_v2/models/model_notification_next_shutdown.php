@@ -7,7 +7,7 @@ class Model_notification_next_shutdown extends Model
         $info  = [];
         $next  = [];
         $alert_hours = [];
-        $hour = date('00:30');
+        $hour = date('H:i');
         $regions = Core::get("/regions/read.php");
         $lang_text   = Service_text::get_message_text();
 
@@ -56,8 +56,12 @@ class Model_notification_next_shutdown extends Model
                         $active = 1;
                         $status = 'Відправлено';
                     } catch (Exception $e) {
-                        $info['error'] = $e->getMessage();
-                        Core::get("/user/update.php", ["user_telegram_id" => $user['user_telegram_id'], 'active' => 0]);
+                        $error = trim(explode(":", $e->getMessage())[1]);
+                        $info['error'] = $error;
+                        if($error == "bot was blocked by the user"){
+                            Core::get("/user/update.php", ["user_telegram_id" => $user['user_telegram_id'], 'active' => 0]);
+                        }
+                        
                         $active        = 0;
                         $status = 'Не відправлено';
                     }

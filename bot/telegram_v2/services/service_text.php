@@ -38,7 +38,8 @@
                 "text_donate" => "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат \nhttps://send.monobank.ua/jar/3F5wzmExTi",
                 "text_title_none_group" => "На даний момент групи відсутні по даній області, виберіть іншу область",
                 "text_title_notiification_off" => "Сповіщення відключені",
-                "button_to_shedule" => "До графіка відключень"
+                "button_to_shedule" => "До графіка відключень",
+                "text_notification_new_user" => "Новий користувач"
             ];
             return  $array;
         } 
