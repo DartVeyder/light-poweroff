@@ -7,10 +7,9 @@ class Model_notification_next_shutdown extends Model
         $info  = [];
         $next  = [];
         $alert_hours = [];
-        $hour = date('H:i');
+        $hour = date('04:30');
         $regions = Core::get("/regions/read.php");
         $lang_text   = Service_text::get_message_text();
-
         foreach ($regions['records'] as $region) {
             if ($region['active'] == 0) {
                 continue;
@@ -54,7 +53,8 @@ class Model_notification_next_shutdown extends Model
                     try {
                         View_notification_next_shutdown::index($data, $user['user_telegram_id']);
                         $active = 1;
-                        $status = 'Відправлено';
+                        $status = 'Відправлено'; 
+                       
                     } catch (Exception $e) {
                         $error = trim(explode(":", $e->getMessage())[1]);
                         $info['error'] = $error;
@@ -67,8 +67,9 @@ class Model_notification_next_shutdown extends Model
                     }
                     $info['active'] = $active;
                     $info['status'] = $status;
-
-     
+                    $text_log = date("Y-m-d H:i") . " [" .$next_hour . "] [" .  $user['user_telegram_id'] . "] " ."[$status]";
+                    $text_log       = date("Y-m-d H:i") . " [$next_hour] [$user[group_name]] [$user[user_telegram_id] [$text] [$status]";
+                    Core::log($text_log, "sending_notification_users", "a+", 'txt');
                     Helper::dd($info, false);
                  
                 }

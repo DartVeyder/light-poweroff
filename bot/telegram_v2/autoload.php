@@ -1,4 +1,3 @@
-use Exception;
     <?php 
     class ClassLoader{ 
         public static $dir = [

@@ -60,6 +60,18 @@
         return $array;
     }
 
+    public static function log($text, $file_name, $mode, $type_file = 'txt'){ 
+        $file = "../logs/$file_name.$type_file"; 
+        $fOpen = fopen($file, $mode);
+        if ( $fOpen ){          
+            fwrite($fOpen, $text."\r");
+            fclose($fOpen);
+        } else {
+            return 'Wrong open log-file.';
+        }
+            
+    }
+
     public static function get($url = '',$data = [] , $type = true, $cookie = ''){
         $url = URL_API . $url;
         $url .= "?".http_build_query($data);
