@@ -31,13 +31,14 @@
                 "text_title_edit_group" => "<b>====== ЗМІНИТИ ГРУПУ ======</b>\n Виберіть групу",
                 "text_title_edit_region" => "<b>====== ЗМІНИТИ ОБЛАСТЬ ======</b>\n Виберіть область",
                 "text_title_edit_notification" => "<b>====== ЗМІНИТИ СПОВІЩЕННЯ ======</b>\n ✅ - стан сповіщення",
-                "button_notification_off" => "Виключити",
-                "button_notification_on" => "Включити",
+                "button_notification_off" => "Вимкнути сповіщення",
+                "button_notification_on" => "Увімкнути сповіщення",
                 "button_notiification_next_shutdown" => "Наступне відключення",
                 "text_developer" => "Розробив цього бота Дімон. По всіх питаннях, пропозиціях і скаргах звертайтеся сюди @dart_dim",
                 "text_donate" => "Для підтримки розробника бота та для оплати послуги хостингу. Ви можете фінансово допомогти зробивши донат \nhttps://send.monobank.ua/jar/3F5wzmExTi",
                 "text_title_none_group" => "На даний момент групи відсутні по даній області, виберіть іншу область",
-                "text_title_notiification_off" => "Сповіщення відключені"
+                "text_title_notiification_off" => "Сповіщення відключені",
+                "button_to_shedule" => "До графіка відключень"
             ];
             return  $array;
         } 

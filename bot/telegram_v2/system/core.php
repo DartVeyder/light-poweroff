@@ -22,7 +22,9 @@
         
         if (isset($result['callback_query'])) {
             $array['action'] = "callback";
-            $message_id =   $result["callback_query"]["message"]["message_id"];;
+            $message_id =   $result["callback_query"]["message"]["message_id"];
+            $message_text =  $result["callback_query"]["message"]['text'];
+            $message_buttons =$result["callback_query"]["message"]['reply_markup']['inline_keyboard']; 
           
             $text = $result['callback_query']['data'];
             $result = $result['callback_query']['from'];
@@ -43,9 +45,18 @@
             "language_code" => $result["language_code"],
             "text" => $text
         ];
+
         if($message_id){
             $array['data']['message_id'] = $message_id;
-        }  
+        }
+
+        if($message_text){
+            $array['data']['message_text'] = $message_text;
+        }
+
+        if($message_buttons) {
+            $array['data']['message_buttons'] = $message_buttons;
+        }
         return $array;
     }
 

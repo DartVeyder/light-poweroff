@@ -14,6 +14,6 @@
     $application = new Application();    
     $application->run();  
   
-    Controller_notification_next_shutdown::index();
+    Controller_notification_next_shutdown::index('send');
     
 ?>

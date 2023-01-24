@@ -1,14 +1,15 @@
 <?php
 class Model_notification_next_shutdown extends Model
 {
-    public static function index()
+    public static function index($action)
     {
         $error = [];
         $info  = [];
         $next  = [];
         $alert_hours = [];
-        $hour = date('H:i');
+        $hour = date('00:30');
         $regions = Core::get("/regions/read.php");
+        $lang_text   = Service_text::get_message_text();
 
         foreach ($regions['records'] as $region) {
             if ($region['active'] == 0) {
@@ -30,28 +31,69 @@ class Model_notification_next_shutdown extends Model
             $users =  Core::get("/user/read.php",);
             $i = 1;
             foreach ($users['records'] as $key => $user) {
-                if (!$user['notification']) {
+                if (!$user['notification'] || !$user['active']) {
                     continue;
-                }
+                } 
 
                 $user_group_id = $user['group_id'];
                 $user_region_id = $user['region_id'];
                 $next_hour = $next[$user_region_id][$user_group_id]['hour'];
                 $text = $next[$user_region_id][$user_group_id]['text'];
-                $button = [['text' => "Виключити сповіщення", 'callback_data' => 'notification-off']];
+                $button = [['text' =>  $lang_text['button_notification_off'], 'callback_data' => 'update-nns_0']];
 
-                $button_merge =  [[['text' => "Головна", 'callback_data' => 'back_weekday']]];
+                $button_merge =  [[['text' =>   $lang_text['button_to_shedule'], 'callback_data' => 'shedule']]];
                 if ($next_hour  == $hour) {
-                    Helper::dd([$user['first_name'], $text, $user['group_name'], $user['region_name'], $user['user_telegram_id'], $i++], false);
                     $data = self::message($text, $button, $button_merge);
-                    View_notification_next_shutdown::index($data, $user['user_telegram_id']);
-                    break;
-                }
+                    $data['action'] = $action;
+                    $info        = [
+                        "user_id"    => $user['user_telegram_id'],
+                        "first_name" => $user['first_name'],
+                        "user_active" => $user['active'],
+                        "i" => $i++
+                    ];
+                    try {
+                        View_notification_next_shutdown::index($data, $user['user_telegram_id']);
+                        $active = 1;
+                        $status = 'Відправлено';
+                    } catch (Exception $e) {
+                        $info['error'] = $e->getMessage();
+                        Core::get("/user/update.php", ["user_telegram_id" => $user['user_telegram_id'], 'active' => 0]);
+                        $active        = 0;
+                        $status = 'Не відправлено';
+                    }
+                    $info['active'] = $active;
+                    $info['status'] = $status;
 
-                if ($key > 10) {
-                    //break;
+     
+                    Helper::dd($info, false);
+                 
                 }
+ 
             }
         }
+    }
+
+    public static function update($notification_id){
+        $lang_text   = Service_text::get_message_text();
+        $result_telegram = Core::getTelegramResult()['data'];
+       
+        if($notification_id){
+            $buttons = [['text' =>$lang_text['button_notification_off'], 'callback_data' => 'update-nns_0']];
+        }else{
+            $buttons = [['text' => $lang_text['button_notification_on'], 'callback_data' => 'update-nns_1']];
+        }
+      
+        $button_shedule=  [[['text' => $lang_text['button_to_shedule'], 'callback_data' => 'shedule']]];
+        $text =  "<b>".$result_telegram['message_text']. "</b>";
+        
+        Core::get("/user/update.php", ["user_telegram_id" => $result_telegram['user_id'], 'notification' => $notification_id]);
+         
+        $message  = self::message($text, $buttons, $button_shedule);
+        $data = [
+            'chat_id'    => $result_telegram['chat_id'],
+            'message_id' => $result_telegram['message_id'],
+        ];  
+
+        return array_merge($data, $message);
     }
 }

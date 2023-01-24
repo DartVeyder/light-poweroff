@@ -12,6 +12,7 @@
             Core::get("/user/update.php", ["user_telegram_id" => $result_telegram['user_id'], 'notification' => $notification_id]);
             View_notification::edit($result_telegram, $notification);
         }
+        
 
         public static function off($result_telegram, $action){
             $notification = Model_notification::off();

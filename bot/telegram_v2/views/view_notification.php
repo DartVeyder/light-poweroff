@@ -8,7 +8,7 @@
 
         public static function off($result_telegram, $notification){
             extract($notification); 
-            self::get_message($text, '', $result_telegram['chat_id'], '', $action);
+            self::get_message($text, $result_telegram['message_id'], $result_telegram['chat_id'], '', $action);
         }
         
     }

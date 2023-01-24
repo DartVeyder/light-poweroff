@@ -41,4 +41,15 @@ class Helper
             exit;
         }
     }
+
+    public static function telegram(){
+        $telegram = Core::getTelegram();
+        $result =  $telegram->getWebhookUpdates();
+        $text = json_encode($result);
+        $array = [
+            "chat_id" => 691027924,
+            "text" => $text, 
+        ];
+        return $array;
+    }
 }

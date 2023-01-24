@@ -7,6 +7,7 @@
             $route_text = self::route_text($result['data']['text'], $type);
             $result['data']['route'] = $route_text;
             $result_telegram = $result['data']; 
+          
             switch ($route_text['action']) {
                 case 'start':
                     Controller_region::index($result_telegram , 'edit');
@@ -44,8 +45,8 @@
                 case 'update-notification':
                     Controller_notification::update($result_telegram,  $route_text['id'], 'edit');
                 break;
-                case 'notification-off':
-                    Controller_notification::off($result_telegram, 'send');
+                case 'update-nns':
+                    Controller_notification_next_shutdown::update($route_text['id'],'edit');
                 break;
                 case 'donate':
                     Controller_donate::index($result_telegram, 'edit');
@@ -53,6 +54,9 @@
                 case 'developer':
                     Controller_developer::index($result_telegram, 'edit');
                 break; 
+                case 'shedule':
+                    Controller_shedule::index($result_telegram , '', date("N"), 'edit');
+                break;
             }
         } 
 
