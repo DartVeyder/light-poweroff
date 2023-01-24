@@ -3,13 +3,12 @@
 class Application {
     
     public function run(){
-            $this->Loader();
-           
+        $this->Loader(); 
     }
     
     public function Loader(){
         spl_autoload_register(['ClassLoader', 'autoload'], true, false);
-      
+
         try{
             $result = Core::getTelegramResult();
 

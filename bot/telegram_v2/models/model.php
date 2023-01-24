@@ -1,6 +1,6 @@
 <?php
     class Model{
-        public static function  message($text, $buttons, $button_merge = []){
+        public static function  message($text, $buttons = [], $button_merge = []){
             
         return [
             'text'         => $text,

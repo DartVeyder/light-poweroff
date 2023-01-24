@@ -1,8 +1,5 @@
 use Exception;
-    <?php
-
-use function PHPSTORM_META\map;
-
+    <?php 
     class ClassLoader{ 
         public static $dir = [
             'system',

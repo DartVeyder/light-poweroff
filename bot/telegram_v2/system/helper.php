@@ -1,11 +1,13 @@
 <?php
 class Helper
 {
-    public static function dd($array)
+    public static function dd($array,$exit = true)
     {
         header('Content-Type: application/json');
-        print_r($array);
-        exit;
+        print_r(json_encode($array, JSON_UNESCAPED_UNICODE));
+        if ($exit) {
+            exit;
+        }
     }
 
     public static function send($data, $exit = true)

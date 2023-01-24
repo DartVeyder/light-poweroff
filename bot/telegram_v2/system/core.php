@@ -49,7 +49,7 @@
         return $array;
     }
 
-    public static function get($url = '',$data = [] , $cookie = ''){
+    public static function get($url = '',$data = [] , $type = true, $cookie = ''){
         $url = URL_API . $url;
         $url .= "?".http_build_query($data);
             $ch = curl_init();
@@ -71,7 +71,11 @@
             $info = curl_getinfo($ch);
             Curl_close($ch);
 
-            return json_decode($output, true);
+            if( $type){
+                return json_decode($output, true);
+            }else{
+                return $output;
+            } 
 
     } 
 }
