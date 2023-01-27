@@ -61,7 +61,8 @@
     }
 
     public static function log($text, $file_name, $mode, $type_file = 'txt'){ 
-        $file = "../logs/$file_name.$type_file"; 
+        $file = DIR_LOGS .  $file_name .".".$type_file;
+        
         $fOpen = fopen($file, $mode);
         if ( $fOpen ){          
             fwrite($fOpen, $text."\r");

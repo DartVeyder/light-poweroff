@@ -12,6 +12,7 @@
                 }
                 $data = self::message($text);
                 View_sending_notification_users::admin_message($data, $user['user_telegram_id']);
+                usleep(50000);
             }
         }
     }

@@ -66,9 +66,8 @@ class Model_notification_next_shutdown extends Model
                         $status = 'Не відправлено';
                     }
                     $info['active'] = $active;
-                    $info['status'] = $status;
-                    $text_log = date("Y-m-d H:i") . " [" .$next_hour . "] [" .  $user['user_telegram_id'] . "] " ."[$status]";
-                    $text_log       = date("Y-m-d H:i") . " [$next_hour] [$user[group_name]] [$user[user_telegram_id] [$text] [$status]";
+                    $info['status'] = $status; 
+                    $text_log = date("Y-m-d H:i:s") . " [$next_hour] [$user[group_name]] [$user[user_telegram_id] [$text] [$status]";
                     Core::log($text_log, "sending_notification_users", "a+", 'txt');
                     Helper::dd($info, false);
                  
