@@ -17,7 +17,11 @@ class Model_region extends Model
         ];
         
         $result_user = Core::get("/user/create.php", $data);
-        Controller_notification_admin::new_user($result_user , 'send'); 
+       
+        if( $result_user['action'] == 'create'){
+          
+            Controller_notification_admin::new_user($result_user , 'send'); 
+        }
         $buttons_region = Button_region::list($regions['records']);
         $text    = $lang_text['start'];
         
