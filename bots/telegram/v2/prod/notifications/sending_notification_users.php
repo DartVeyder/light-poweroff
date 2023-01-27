@@ -1,7 +1,7 @@
 <?php
     
-    include_once "../../../vendor/autoload.php";
     include_once "../config.php";
+    include_once DIR_MAIN . "vendor/autoload.php"; 
     include_once "../autoload.php";
     include_once "../application.php";
 
