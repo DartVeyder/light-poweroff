@@ -8,7 +8,7 @@
             $result['data']['route'] = $route_text;
             $result_telegram = $result['data']; 
             
-            $text_log = date("Y-m-d H:i:s") . " [$result_telegram[user_id]] [$result_telegram[first_name]]  [$route_text[action] $route_text[id]] ";
+            $text_log = date("Y-m-d H:i:s") . " [calback] [$result_telegram[user_id]] [$result_telegram[first_name]]  [$route_text[action] $route_text[id]] ";
             Core::log($text_log, "active_users", "a+", 'txt');
 
             switch ($route_text['action']) {

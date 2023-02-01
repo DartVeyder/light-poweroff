@@ -21,6 +21,7 @@
         $result = $telegram->getWebhookUpdates();
         
         if (isset($result['callback_query'])) {
+
             $array['action'] = "callback";
             $message_id =   $result["callback_query"]["message"]["message_id"];
             $message_text =  $result["callback_query"]["message"]['text'];
@@ -39,11 +40,11 @@
         $array['data'] = [
             "user_id" => $result["id"],
             "chat_id" => $result["id"],
-            "first_name" => $result["first_name"],
-            "last_name" => $result["last_name"],
-            "username" => $result["username"],
+            "first_name" => self::valid($result["first_name"]),
+            "last_name" => self::valid($result["last_name"]),
+            "username" => self::valid($result["username"]),
             "language_code" => $result["language_code"],
-            "text" => $text
+            "text" => self::valid($text)
         ];
 
         if($message_id){
@@ -57,6 +58,10 @@
         if($message_buttons) {
             $array['data']['message_buttons'] = $message_buttons;
         }
+
+        $text_log = date("Y-m-d H:i:s") . json_encode($array, JSON_UNESCAPED_UNICODE);
+        Core::log($text_log, "telegram_request_users", "a+", 'txt');
+
         return $array;
     }
 
@@ -102,4 +107,11 @@
             } 
 
     } 
+
+    public static function valid($input) {
+        $input = htmlspecialchars($input, ENT_IGNORE, 'utf-8');
+        $input = strip_tags($input);
+        $input = stripslashes($input);
+        return $input;
+    }
 }

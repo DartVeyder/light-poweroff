@@ -43,7 +43,7 @@
             "last_name" => $result["last_name"],
             "username" => $result["username"],
             "language_code" => $result["language_code"],
-            "text" => $text
+            "text" => self::valid($text)
         ];
 
         if($message_id){
@@ -102,4 +102,11 @@
             } 
 
     } 
+
+    public static function valid($input) {
+        $input = htmlspecialchars($input, ENT_IGNORE, 'utf-8');
+        $input = strip_tags($input);
+        $input = stripslashes($input);
+        return $input;
+     }
 }
