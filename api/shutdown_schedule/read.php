@@ -32,11 +32,10 @@ if($num > 0){
         extract($row);
         $shutdown_schedule_item = array(
             "group_id" => $group_id,
-            "group_name" => $group_name,
             "weekday_id" => $weekday_id,
             "weekday_name" => $weekday_name,
-            "shutdown_time" => $shutdown_time,
-            "power_time" => $power_time,
+            "time_start" => $time_start,
+            "time_end" => $time_end,
             "status_id" => $status_id,
             "status_name" => $status_name,
             "region_id"=> $region_id,

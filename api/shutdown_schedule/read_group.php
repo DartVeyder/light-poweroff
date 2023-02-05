@@ -41,12 +41,11 @@ $config_db = $config['database'];
             extract($row);
                  
             $shutdown_schedule_item = array(
-                "group_id" => $group_id,
-                "group_name" => $group_name,
+                "group_id" => $group_id, 
                 "weekday_id" => $weekday_id,
                 "weekday_name" => $weekday_name,
-                "shutdown_time" => $shutdown_time,
-                "power_time" => $power_time,
+                "time_start" => $time_start,
+                "time_end" => $time_end,
                 "status_id" => $status_id,
                 "status_name" => $status_name,
                 "region_id"=> $region_id,
@@ -54,13 +53,13 @@ $config_db = $config['database'];
             );
 
             if($weekday_id == date("N")){
-                $shutdown_time_now = $date . " " . $row['shutdown_time'] ;
+                $shutdown_time_now = $date . " " . $row['time_start'] ;
                 
-                if($row['shutdown_time'] > $row['power_time']){
+                if($row['time_end'] > $row['time_start']){
                     $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
                 }  
 
-                $power_time_now = $date . " " .$row['power_time'];
+                $power_time_now = $date . " " .$row['time_end'];
                 if($to_time > $shutdown_time_now &&  $power_time_now > $to_time){
                     $shutdown_schedule_item['now'] = true;
                 }

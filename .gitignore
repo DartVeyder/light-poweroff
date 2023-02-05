@@ -8,3 +8,4 @@ bot/telegram_v2/config.php.old
 bot/.vscode/
 bots/telegram/v2/prod/config.php
 bots/telegram/v2/dev/config.php
+bots/.vscode/sftp.json

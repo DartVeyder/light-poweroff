@@ -82,26 +82,18 @@
 
         private function getQuery(){
             $query = "SELECT 
-            s.weekday_id, s.group_id, s.time_id, s.status_id, s.region_id,
-            st.name as status_name, 
-            t.shutdown_time, t.power_time,
-            gr.name as group_name,
+            s.weekday_id, s.group_id, s.status_id, s.region_id, s.time_start, s.time_end,
+            st.name as status_name,
             w.name as weekday_name,
             r.name as region_name
             FROM 
                 ".$this->table_name." s
                 LEFT JOIN
                     ".$this->table_prefix."weekdays w
-                        ON s.weekday_id = w.weekday_id
-                LEFT JOIN
-                ".$this->table_prefix."time t 
-                        ON s.time_id = t.time_id
+                        ON s.weekday_id = w.weekday_id 
                 LEFT JOIN
                 ".$this->table_prefix."status st
-                        ON s.status_id = st.status_id
-                LEFT JOIN
-                ".$this->table_prefix."cluster gr
-                        on s.group_id = gr.group_id 
+                        ON s.status_id = st.status_id 
                 LEFT JOIN
                 ".$this->table_prefix."regions r
                         on s.region_id = r.region_id ";
