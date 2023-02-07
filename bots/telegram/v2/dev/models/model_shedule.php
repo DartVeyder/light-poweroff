@@ -13,7 +13,7 @@ class Model_shedule extends Model
             "group_id"    => $user['group_id'],
             "region_id"   => $user['region_id'],
             "weekday_id"  => $weekday_id
-        ]);
+        ]); 
         $weekday          = Core::get("/weekday/readOne.php", ['weekday_id' => date("N")]);
         
         $weekdays = Core::get("/weekday/read.php");

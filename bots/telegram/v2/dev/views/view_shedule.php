@@ -7,7 +7,7 @@ class View_shedule extends View
         extract($data);
         $text = $title_text;
         foreach ($shutdowm_shedule as $item) {
-            $row_time = "$item[shutdown_time] -  $item[power_time] $item[status_name] ";
+            $row_time = "$item[time_start] - $item[time_end] $item[status_name] ";
             if (@$item['now']) {
                 $text .= "➤<b>$row_time</b>\n";
             } else {

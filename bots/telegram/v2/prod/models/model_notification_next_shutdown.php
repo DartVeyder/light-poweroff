@@ -7,7 +7,7 @@ class Model_notification_next_shutdown extends Model
         $info  = [];
         $next  = [];
         $alert_hours = [];
-        $hour = date('04:30');
+        $hour = date('H:i');
         $regions = Core::get("/regions/read.php");
         $lang_text   = Service_text::get_message_text();
         foreach ($regions['records'] as $region) {
@@ -20,7 +20,7 @@ class Model_notification_next_shutdown extends Model
                 $next[$next_shutdown['region_id']][$next_shutdown['group_id']] =
                     [
                         "hour" => $alert_hour,
-                        "text" => "<b>➤" . $next_shutdown['shutdown_time'] . " - " . $next_shutdown['power_time'] . " " .  $next_shutdown['status_name'] . "</b>"
+                        "text" => "<b>➤" . $next_shutdown['time_start'] . " - " . $next_shutdown['time_end'] . " " .  $next_shutdown['status_name'] . "</b>"
                     ];
                 $alert_hours[] = $alert_hour;
             }

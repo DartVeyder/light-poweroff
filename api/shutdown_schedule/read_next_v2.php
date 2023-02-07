@@ -94,7 +94,6 @@ function getNextShutdown($data, $users)
     $time_start = $data[0]['time_start'];
     $send_users = [];
     foreach ($data as $item) {
-       
 
         if ($item['min'] == min($arr_min)) {
             $stmt = $users->read(['group_id' => $item['group_id'], 'region_id' => $item['region_id'], 'notification' => 1]);
