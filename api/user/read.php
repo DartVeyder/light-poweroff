@@ -17,10 +17,10 @@
     // инициализируем объект
     $user = new User($db,$config['database']);
      
-    $stmt = $user->read();
+    $stmt = $user->read($_GET);
     $num = $stmt->rowCount();
 
-    if($num > 0){
+    if($num > 0){ 
         $user_arr = array();
         $user_arr['records'] = array();
     

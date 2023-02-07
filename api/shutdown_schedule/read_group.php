@@ -55,7 +55,7 @@ $config_db = $config['database'];
             if($weekday_id == date("N")){
                 $shutdown_time_now = $date . " " . $row['time_start'] ;
                 
-                if($row['time_end'] > $row['time_start']){
+                if($row['time_start'] > $row['time_end']){
                     $date = date("Y-m-d",strtotime('+1 day', strtotime(date('Y-m-d')))); 
                 }  
 
