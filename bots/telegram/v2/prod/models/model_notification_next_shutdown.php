@@ -22,7 +22,7 @@ class Model_notification_next_shutdown extends Model
                     $status = 'Не відправлено';
                     $error  =  $error = trim(explode(":", $e->getMessage())[1]);
 
-                    Core::get("/user/update.php", ["user_telegram_id" => $item['user_telegram_id'], 'active' => 0, 'date_not_active' => date("Y-m-d H:i:s"), 'not_update' => 'last_activity']);
+                   // Core::get("/user/update.php", ["user_telegram_id" => $item['user_telegram_id'], 'active' => 0, 'date_not_active' => date("Y-m-d H:i:s"), 'not_update' => 'last_activity']);
                 }
                 $info[] = [
                     "user_telegram_id" => $item['user_telegram_id'],
