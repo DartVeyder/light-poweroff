@@ -21,8 +21,11 @@
     
     $not_update = @explode(",", $_GET['not_update'] );
     unset($data['not_update']);
-
-    $data['date_modified'] = date("Y-m-d H:i:s");
+     
+    if(!in_array("modified" , $not_update)){
+        $data['date_modified'] = date("Y-m-d H:i:s");
+    }
+    
 
     if(!in_array("last_activity" , $not_update)){
         $data["date_last_activity"] = date("Y-m-d H:i:s");

@@ -3,10 +3,10 @@ class Model_notification_next_shutdown extends Model
 {
     public static function index($action)
     { 
-        $next_shutdown = Core::get("/shutdown_schedule/read_next_v2.php");
+        $next_shutdown = Core::get("/shutdown_schedule/read_next.php");
         $lang_text   = Service_text::get_message_text();
         $info = [];
-        if(date("20:30") ==  $next_shutdown['notification'])
+        if(date("16:30") ==  $next_shutdown['notification'])
             foreach ($next_shutdown['list'] as $item) {
                 $text =  "<b>➤" . $item['time_start'] . " - " . $item['time_end'] . " " .  $item['status_name'] . "</b>"; 
                 $button = [['text' =>  $lang_text['button_notification_off'], 'callback_data' => 'update-nns_0']]; 
@@ -20,17 +20,25 @@ class Model_notification_next_shutdown extends Model
                 } catch (Exception $e) {  
                     $active = 0;
                     $status = 'Не відправлено';
-                    $error  = $e->getMessage();
-                }
+                    $error  =  $error = trim(explode(":", $e->getMessage())[1]);
 
+                   // Core::get("/user/update.php", ["user_telegram_id" => $item['user_telegram_id'], 'active' => 0, 'date_not_active' => date("Y-m-d H:i:s"), 'not_update' => 'last_activity']);
+                }
                 $info[] = [
                     "user_telegram_id" => $item['user_telegram_id'],
+                    "status_name" => $item['status_name'],
                     "active" => $active,
                     "status" => $status, 
                     "error" => $error 
-                ];  
+                ];
+                $text_log = date("Y-m-d H:i:s") . " [$next_shutdown[notification]] [Група $item[group_id]] [$item[user_telegram_id]] [$text] [$status]";
+                Core::log($text_log, "sending_notification_users", "a+", 'txt');
+                break;
+                usleep(20000);
             }
+            
             Helper::dd($info, false); 
+
     }
 
     public static function update($notification_id){
