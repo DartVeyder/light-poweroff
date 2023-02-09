@@ -12,19 +12,17 @@ header("Content-Type: application/json");
 include_once "../../class/core.php";
 include_once "../../class/dataBase/database.php";
 include_once "../objects/shutdown_schedule.php";
+include_once "../objects/user.php";
 
-// отримуємо з'єднання з базою даних
-$config_db = $config['database'];
+// отримуємо з'єднання з базою даних 
 $database = new Database();
-$db = $database->getConnection($config_db);
+$db = $database->getConnection($config['database']);
+
+$users = new User($db, $config['database']);
 
 // ініціалізуємо об'єкт
-$shutdown_schedule = new ShutdownShedule($db, $config_db);
+$shutdown_schedule = new ShutdownShedule($db, $config['database']);
 
-
-// встановимо властивість ID запису для читання
-$shutdown_schedule->group_id = isset($_GET["group_id"]) ? $_GET["group_id"] : die();
-$shutdown_schedule->region_id = isset($_GET["region_id"]) ? $_GET["region_id"] : die();
 
 $to_weekday_id = date("N");
 $date = date("Y-m-d");
@@ -41,34 +39,25 @@ $stmt = $shutdown_schedule->readNext();
 
 $num = $stmt->rowCount();
 $shutdown_schedule_arr = array();
-$shutdown_schedule_arr["metadata"][] = [
-    "datetime" => $datetime
-];
+
 if ($num > 0) {
 
     $shutdown_schedule_arr['records'] = array();
 
-
     // отримуємо вміст нашої таблиці
     // fetch() быстрее, чем fetchAll()
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-        // извлекаем строку
         extract($row);
         $datetime_week =  getDatesWeekday($to_weekday_id, $weekday_id, $date);
-        $datetime_shutdown = $datetime_week . " " . $time_start;
+        $datetime_start = $datetime_week . " " . $time_start;
+        $min = strtotime($datetime_start) - strtotime($datetime);
         if ($date > $datetime_week) {
             continue;
         }
 
-        if ($datetime > $datetime_shutdown) {
+        if ($datetime > $datetime_start) {
             continue;
         }
-
-        $min = strtotime($datetime_shutdown) - strtotime($datetime);
-        $notification = [];
-
-        $notification[] = date('H:i', strtotime('-30 minute', strtotime($time_start)));
 
         $shutdown_schedule_item = array(
             "group_id" => $group_id,
@@ -80,14 +69,12 @@ if ($num > 0) {
             "status_name" => $status_name,
             "region_id" => $region_id,
             "region_name" => $region_name,
-            "notification" => $notification,
-            "date" => $datetime_shutdown,
+            "datetime_start" => $datetime_start,
             "min" => $min
         );
         array_push($shutdown_schedule_arr["records"], $shutdown_schedule_item);
     }
-
-    $shutdown_schedule_arr["records"] = [getNextShutdown($shutdown_schedule_arr["records"])];
+    $shutdown_schedule_arr = getNextShutdown($shutdown_schedule_arr["records"], $users);
     // встановлюємо код відповіді – 200 OK
     http_response_code(200);
 
@@ -101,13 +88,36 @@ if ($num > 0) {
     echo json_encode(array("message" => "Графіка виключень не знайдено."), JSON_UNESCAPED_UNICODE);
 }
 
-function getNextShutdown($data)
+function getNextShutdown($data, $users)
 {
     $arr_min = array_column($data, 'min');
-    asort($arr_min);
-    $id = array_key_first($arr_min);
+    $time_start = $data[0]['time_start'];
+    $send_users = [];
+    foreach ($data as $item) {
 
-    return $data[$id];
+        if ($item['min'] == min($arr_min)) {
+            $stmt = $users->read(['group_id' => $item['group_id'], 'region_id' => $item['region_id'], 'notification' => 1]);
+            if ($stmt->rowCount() > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $send_users['list'][] = [
+                        "user_telegram_id" => $row['user_telegram_id'],
+                        "status_name" => $item['status_name'],
+                        "time_start"  => $item["time_start"],
+                        "time_end"    => $item["time_end"],
+                        'group_id'    => $item['group_id'],
+                        'region_name' => $item['region_name'],
+                    ];
+                } 
+            } else {
+                break;
+            }
+        }
+    }
+    $send_users['metadata'] = [
+        "quantity" => count($send_users['list'])
+    ] ;
+    $send_users["notification"] = date('H:i', strtotime('-30 minute', strtotime($time_start)));
+    return $send_users;
 }
 
 function getDatesWeekday($to_weekday_id, $weekday_id,  $today)

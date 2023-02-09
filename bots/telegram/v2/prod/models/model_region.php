@@ -12,7 +12,7 @@ class Model_region extends Model
                 "user_telegram_id" => $user_id,
                 "first_name" => $first_name,
                 "last_name" =>  $last_name,
-                "language_code" => $language_nmae,
+                "language_code" => $language_code,
                 "telegram_chat_id" =>  $chat_id,
         ];
         

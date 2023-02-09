@@ -2,79 +2,43 @@
 class Model_notification_next_shutdown extends Model
 {
     public static function index($action)
-    {
-        $error = [];
-        $info  = [];
-        $next  = [];
-        $alert_hours = [];
-        $hour = date('H:i');
-        $regions = Core::get("/regions/read.php");
+    { 
+        $next_shutdown = Core::get("/shutdown_schedule/read_next.php");
         $lang_text   = Service_text::get_message_text();
-        foreach ($regions['records'] as $region) {
-            if ($region['active'] == 0) {
-                continue;
-            }
-            for ($group_id = 1; $group_id <= $region['number_groups']; $group_id++) {
-                $next_shutdown = Core::get("/shutdown_schedule/read_next.php", ["group_id" => $group_id, "region_id" => $region["region_id"]])['records'][0];
-                $alert_hour =  $next_shutdown['notification'][0];
-                $next[$next_shutdown['region_id']][$next_shutdown['group_id']] =
-                    [
-                        "hour" => $alert_hour,
-                        "text" => "<b>➤" . $next_shutdown['time_start'] . " - " . $next_shutdown['time_end'] . " " .  $next_shutdown['status_name'] . "</b>"
-                    ];
-                $alert_hours[] = $alert_hour;
-            }
-        }
-
-        if (in_array($hour, $alert_hours)) {
-            $users =  Core::get("/user/read.php",);
-            $i = 1;
-            foreach ($users['records'] as $key => $user) {
-                if (!$user['notification'] || !$user['active']) {
-                    continue;
-                } 
-
-                $user_group_id = $user['group_id'];
-                $user_region_id = $user['region_id'];
-                $next_hour = $next[$user_region_id][$user_group_id]['hour'];
-                $text = $next[$user_region_id][$user_group_id]['text'];
-                $button = [['text' =>  $lang_text['button_notification_off'], 'callback_data' => 'update-nns_0']];
-
+        $info = [];
+        if(date("H:i") ==  $next_shutdown['notification'])
+            foreach ($next_shutdown['list'] as $item) {
+                $text =  "<b>➤" . $item['time_start'] . " - " . $item['time_end'] . " " .  $item['status_name'] . "</b>"; 
+                $button = [['text' =>  $lang_text['button_notification_off'], 'callback_data' => 'update-nns_0']]; 
                 $button_merge =  [[['text' =>   $lang_text['button_to_shedule'], 'callback_data' => 'shedule']]];
-                if ($next_hour  == $hour) {
-                    $data = self::message($text, $button, $button_merge);
-                    $data['action'] = $action;
-                    $info        = [
-                        "user_id"    => $user['user_telegram_id'],
-                        "first_name" => $user['first_name'],
-                        "user_active" => $user['active'],
-                        "i" => $i++
-                    ];
-                    try {
-                        View_notification_next_shutdown::index($data, $user['user_telegram_id']);
-                        $active = 1;
-                        $status = 'Відправлено'; 
-                       
-                    } catch (Exception $e) {
-                        $error = trim(explode(":", $e->getMessage())[1]);
-                        $info['error'] = $error;
-                        if($error == "bot was blocked by the user"){
-                            Core::get("/user/update.php", ["user_telegram_id" => $user['user_telegram_id'], 'active' => 0]);
-                        }
-                        
-                        $active        = 0;
-                        $status = 'Не відправлено';
-                    }
-                    $info['active'] = $active;
-                    $info['status'] = $status; 
-                    $text_log = date("Y-m-d H:i:s") . " [$next_hour] [$user[group_name]] [$user[user_telegram_id] [$text] [$status]";
-                    Core::log($text_log, "sending_notification_users", "a+", 'txt');
-                    Helper::dd($info, false);
-                 
+                $data = self::message($text, $button, $button_merge);
+                $data['action'] = $action;
+                try { 
+                    View_notification_next_shutdown::index($data, $item['user_telegram_id']); 
+                    $active = 1;
+                    $status = 'Відправлено'; 
+                } catch (Exception $e) {  
+                    $active = 0;
+                    $status = 'Не відправлено';
+                    $error  =  $error = trim(explode(":", $e->getMessage())[1]);
+
+                    Core::get("/user/update.php", ["user_telegram_id" => $item['user_telegram_id'], 'active' => 0, 'date_not_active' => date("Y-m-d H:i:s"), 'not_update' => 'last_activity']);
                 }
- 
+                $info[] = [
+                    "user_telegram_id" => $item['user_telegram_id'],
+                    "status_name" => $item['status_name'],
+                    "active" => $active,
+                    "status" => $status, 
+                    "error" => $error 
+                ];
+                $text_log = date("Y-m-d H:i:s") . " [$next_shutdown[notification]] [Група $item[group_id]] [$item[user_telegram_id]] [$text] [$status]";
+                Core::log($text_log, "sending_notification_users", "a+", 'txt');
+                
+                usleep(20000);
             }
-        }
+            
+            Helper::dd($info, false); 
+
     }
 
     public static function update($notification_id){

@@ -56,31 +56,8 @@
             return $stmt;
         }
 
-        //метод для получення часу наступного відключення
-        public function readNext(){
-            $query = $this->getQuery();
-            $query .=  "WHERE
-                    s.group_id   = ? AND
-                    s.region_id  = ? AND  
-                    s.status_id IN (1,3) 
-                ORDER BY
-                    s.weekday_id ASC, s.time_start ASC";
-            ;  
-            // подготовка запроса
-            $stmt = $this->conn->prepare($query);
-
-            // привязываем id товара, который будет получен
-            $stmt->bindParam(1, $this->group_id);
-            $stmt->bindParam(2, $this->region_id);  
-        
-            
-            // выполняем запрос
-            $stmt->execute(); 
-            return $stmt;
-        }
-
          //метод для получення часу наступного відключення v2
-         public function readNext_v2(){
+         public function readNext(){
             $query = $this->getQuery();
             $query .=  "WHERE
                     s.status_id IN (1,3) 

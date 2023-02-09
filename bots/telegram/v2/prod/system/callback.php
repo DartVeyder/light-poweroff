@@ -10,7 +10,8 @@
             
             $text_log = date("Y-m-d H:i:s") . " [calback] [$result_telegram[user_id]] [$result_telegram[first_name]]  [$route_text[action] $route_text[id]] ";
             Core::log($text_log, "active_users", "a+", 'txt');
-
+            Core::get("/user/update.php", ["user_telegram_id" => $result_telegram['user_id'] ,  'not_update' => 'modified']);
+            
             switch ($route_text['action']) {
                 case 'start':
                     Controller_region::index($result_telegram , 'edit');
@@ -58,7 +59,7 @@
                     Controller_developer::index($result_telegram, 'edit');
                 break; 
                 case 'shedule':
-                    Controller_shedule::index($result_telegram , '', date("N"), 'edit');
+                    Controller_shedule::index($result_telegram , '', date("N"), 'send');
                 break;
             }
         } 

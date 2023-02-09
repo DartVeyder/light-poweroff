@@ -37,7 +37,7 @@
                 $info['status'] = $status; 
                 $text_log = date("Y-m-d H:i:s") . " [$user[user_id]] [$user[user_telegram_id]] [$user[first_name]] [$status]";
                 Core::log($text_log, "sending_message_users", "a+", 'txt');
-                echo $text_log . "<br>";
+                Helper::dd($text_log, false);
 
                
                 usleep(20000);
